@@ -1,6 +1,6 @@
 # bsl-editor
 
-Follow instructions here to setup the project locally (once you clone the project into intellij, download the javafx sdk, add it as a library and add the vm arguments to point to it as well):
+Follow instructions here to set up the project locally (once you clone the project into intellij, download the javafx sdk, add it as a library and add the vm arguments to point to it as well):
 
 https://openjfx.io/openjfx-docs/
 
