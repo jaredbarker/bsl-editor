@@ -8,3 +8,7 @@ https://openjfx.io/openjfx-docs/
 Download the JavaFX SDK from here
 
 https://gluonhq.com/products/javafx/
+
+
+Here is a tutorial on javaFX:
+https://www.tutorialspoint.com/javafx/layout_borderpane.htm
