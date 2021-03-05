@@ -2,6 +2,7 @@ package gui_objects.left;
 
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
+import gui_objects.right.RightButtonsEnum;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
@@ -23,7 +24,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     }
 
     @Override
-    public void toolBarSelection(String buttonPress) {
+    public void rightToolBarSelection(RightButtonsEnum buttonPress) {
 
     }
 }

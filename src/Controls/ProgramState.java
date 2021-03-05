@@ -1,5 +1,7 @@
 package Controls;
 
+import gui_objects.right.RightButtonsEnum;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +26,10 @@ public class ProgramState implements ProgramStateListener{
 
 
     @Override
-    public void toolBarSelection(String buttonPress) {
+    public void rightToolBarSelection(RightButtonsEnum buttonPress) {
 
         for (ProgramStateListener listener : listenerList) {
-            listener.toolBarSelection(buttonPress);
+            listener.rightToolBarSelection(buttonPress);
         }
     }
 }

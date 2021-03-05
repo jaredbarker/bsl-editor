@@ -16,12 +16,12 @@ public class RightPane extends BorderPane implements ProgramStateListener {
         this.state = state;
         this.state.addListener(this);
 
-        this.setTop(new RightToolBar());
+        this.setTop(new RightToolBar(state));
         this.setCenter(new TextField("Center Right"));
     }
 
     @Override
-    public void toolBarSelection(String buttonPress) {
-
+    public void rightToolBarSelection(RightButtonsEnum buttonPress) {
+        this.setCenter(new TextField(buttonPress.toString()));
     }
 }
