@@ -12,3 +12,30 @@ https://gluonhq.com/products/javafx/
 
 Here is a tutorial on javaFX:
 https://www.tutorialspoint.com/javafx/layout_borderpane.htm
+
+
+Here are the current ideas on what features to include:
+
+Level Editor
+
+    -import audio
+    -2d map to place the notes/blocks
+    -note selector panel
+    -way to save /save as /open /edit the files
+    -way to set the beats per minute
+    -way to copy/paste sets of notes
+main feature:
+	
+	-play/pause the audio syncd with the map
+	-way to slow down the playing of the audio/map
+	
+nice to have:
+	
+	-auto save feature
+	-auto backup file
+	
+cherry on top/future features:
+	
+	-auto detect beat/time signature
+	-auto fill in beat spaces
+	-3D visualizer to "test" the map
