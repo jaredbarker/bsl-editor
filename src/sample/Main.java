@@ -1,6 +1,7 @@
 package sample;
 
 import Controls.ProgramState;
+import gui_objects.bottom.BottomPane;
 import gui_objects.left.LeftPane;
 import gui_objects.right.RightPane;
 import javafx.application.Application;
@@ -23,11 +24,9 @@ public class Main extends Application {
         BorderPane bPane = new BorderPane();
 
         //Setting the top, bottom, center, right and left nodes to the pane
-//        bPane.setTop();
-        bPane.setBottom(new TextField("Bottom"));
+        bPane.setBottom(new BottomPane(state));
         bPane.setLeft(new LeftPane(state));
         bPane.setRight(new RightPane(state));
-//        bPane.setCenter(new TextField("Center"));
 
         //Creating a scene object
         Scene scene = new Scene(bPane);
