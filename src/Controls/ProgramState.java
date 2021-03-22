@@ -1,8 +1,8 @@
 package Controls;
 
 import Models.Note;
+import Models.Note2DPosition;
 import gui_objects.right.RightButtonsEnum;
-import javafx.util.Pair;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class ProgramState implements ProgramStateListener{
     private List<ProgramStateListener> listenerList;
-    private Map<Pair<Integer, Integer>, Note> notes;
+    private Map<Note2DPosition, Note> notes;
     private int currentNoteType;
     private int currentNoteDirection;
 
@@ -54,6 +54,15 @@ public class ProgramState implements ProgramStateListener{
 
     public void setCurrentNoteDirection(int currentNoteDirection) {
         this.currentNoteDirection = currentNoteDirection;
+    }
+
+
+    public Map<Note2DPosition, Note> getNotes() {
+        return notes;
+    }
+
+    public void addNote(Note2DPosition pos, Note note) {
+        this.notes.put(pos, note);
     }
 
 }
