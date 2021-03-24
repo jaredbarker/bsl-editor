@@ -2,8 +2,10 @@ package gui_objects.left;
 
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
+import Models.CutDirection;
 import Models.Note;
 import Models.Note2DPosition;
+import Models.NoteType;
 import gui_objects.right.RightButtonsEnum;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
@@ -65,11 +67,14 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                 //        System.out.println("X: " + event.getX() + "Y: " + event.getY());
                 //Left click: primary, right click: secondary
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    drawNote(noteArea, event.getX(), event.getY());
+                    drawNote(noteArea, true);
                     //TODO add the note to the program state
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
-
+                    drawNote(noteArea, false);
+                    initCanvas(noteArea);
+                    drawBoard(noteArea, event.getX(), event.getY());
+                    drawNotes(noteArea);
                 }
             }
         });
@@ -113,15 +118,20 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         }
     }
 
-    private void drawNote(GraphicsContext gc, double mouse_x, double mouse_y){
-        if (state.getCurrentNoteType() == 0) {
-            gc.setFill(Color.BLUE);
-        } else {
-            gc.setFill(Color.RED);
-        }
-        gc.fillRect(currentMouseCol, currentMouseRow, noteSize, noteSize);
+    private void drawNote(GraphicsContext gc, boolean isAdd){
         //TODO: figure out the right info to put into the note.
-        state.addNote(new Note2DPosition(currentMouseRow, currentMouseCol), new Note(0, 0, 0, state.getCurrentNoteType(), 0));
+        if (isAdd) {
+            if (state.getCurrentNoteType() == NoteType.RIGHT) {
+                gc.setFill(Color.BLUE);
+            } else {
+                gc.setFill(Color.RED);
+            }
+            gc.fillRect(currentMouseCol, currentMouseRow, noteSize, noteSize);
+            drawNoteDirection(gc, currentMouseRow, currentMouseCol, state.getCurrentNoteDirection().getInt());
+            state.addNote(new Note2DPosition(currentMouseRow, currentMouseCol), new Note(0, 0, 0, state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
+        } else {
+            state.removeNote(new Note2DPosition(currentMouseRow, currentMouseCol));
+        }
     }
 
     private void drawNotes(GraphicsContext gc) {
@@ -129,13 +139,17 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         for (Map.Entry<Note2DPosition,Note> entry : this.state.getNotes().entrySet()) {
             Note2DPosition pos = entry.getKey();
             Note note = entry.getValue();
-            if (note.get_type() == 0) {
+            if (note.get_type() == NoteType.RIGHT.getInt()) {
                 gc.setFill(Color.BLUE);
             } else {
                 gc.setFill(Color.RED);
             }
-            gc.fillRect(pos.getCol(), pos.getRow(), noteSize, noteSize); //creates dots at the edge of the note rectangle area
-
+            gc.fillRect(pos.getCol(), pos.getRow(), noteSize, noteSize);
+            drawNoteDirection(gc, pos.getRow(), pos.getCol(), note.get_cutDirection());
         }
+    }
+
+    private void drawNoteDirection(GraphicsContext gc, int row, int col, int cutDirection) {
+            CutDirection.getDirection(cutDirection).drawDirection(gc, row, col, noteSize);
     }
 }

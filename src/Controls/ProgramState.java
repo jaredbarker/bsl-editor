@@ -1,7 +1,9 @@
 package Controls;
 
+import Models.CutDirection;
 import Models.Note;
 import Models.Note2DPosition;
+import Models.NoteType;
 import gui_objects.right.RightButtonsEnum;
 
 import java.util.*;
@@ -13,14 +15,14 @@ import java.util.*;
 public class ProgramState implements ProgramStateListener{
     private List<ProgramStateListener> listenerList;
     private Map<Note2DPosition, Note> notes;
-    private int currentNoteType;
-    private int currentNoteDirection;
+    private NoteType currentNoteType;
+    private CutDirection currentNoteDirection;
 
     public ProgramState() {
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
-        this.currentNoteDirection = 0;
-        this.currentNoteType = 0;
+        this.currentNoteDirection = CutDirection.SOUTH;
+        this.currentNoteType = NoteType.LEFT;
     }
 
     /**
@@ -40,22 +42,21 @@ public class ProgramState implements ProgramStateListener{
         }
     }
 
-    public int getCurrentNoteType() {
+    public NoteType getCurrentNoteType() {
         return currentNoteType;
     }
 
-    public void setCurrentNoteType(int currentNoteType) {
+    public void setCurrentNoteType(NoteType currentNoteType) {
         this.currentNoteType = currentNoteType;
     }
 
-    public int getCurrentNoteDirection() {
+    public CutDirection getCurrentNoteDirection() {
         return currentNoteDirection;
     }
 
-    public void setCurrentNoteDirection(int currentNoteDirection) {
+    public void setCurrentNoteDirection(CutDirection currentNoteDirection) {
         this.currentNoteDirection = currentNoteDirection;
     }
-
 
     public Map<Note2DPosition, Note> getNotes() {
         return notes;
@@ -63,6 +64,10 @@ public class ProgramState implements ProgramStateListener{
 
     public void addNote(Note2DPosition pos, Note note) {
         this.notes.put(pos, note);
+    }
+
+    public void removeNote(Note2DPosition pos) {
+        this.notes.remove(pos);
     }
 
 }
