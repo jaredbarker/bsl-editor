@@ -122,9 +122,9 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         //TODO: figure out the right info to put into the note.
         if (isAdd) {
             if (state.getCurrentNoteType() == NoteType.RIGHT) {
-                gc.setFill(Color.BLUE);
+                gc.setFill(NoteType.RIGHT.getColor());
             } else {
-                gc.setFill(Color.RED);
+                gc.setFill(NoteType.LEFT.getColor());
             }
             gc.fillRect(currentMouseCol, currentMouseRow, noteSize, noteSize);
             drawNoteDirection(gc, currentMouseRow, currentMouseCol, state.getCurrentNoteDirection().getInt());
@@ -140,9 +140,9 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             Note2DPosition pos = entry.getKey();
             Note note = entry.getValue();
             if (note.get_type() == NoteType.RIGHT.getInt()) {
-                gc.setFill(Color.BLUE);
+                gc.setFill(NoteType.RIGHT.getColor());
             } else {
-                gc.setFill(Color.RED);
+                gc.setFill(NoteType.LEFT.getColor());
             }
             gc.fillRect(pos.getCol(), pos.getRow(), noteSize, noteSize);
             drawNoteDirection(gc, pos.getRow(), pos.getCol(), note.get_cutDirection());

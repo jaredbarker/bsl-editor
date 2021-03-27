@@ -3,6 +3,7 @@ package gui_objects.right.paneContent;
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
 import Models.CutDirection;
+import Models.NoteType;
 import gui_objects.right.RightButtonsEnum;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,20 +31,26 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
     private Button none;
     private GridPane directionGrid;
 
+    private Button left;
+    private Button right;
+
     public EditPane(ProgramState state) {
         super();
         this.state = state;
         this.state.addListener(this);
 
-        this.north = new Button("", this.setUpIcon(CutDirection.NORTH));
-        this.northeast = new Button("", this.setUpIcon(CutDirection.NORTHEAST));
-        this.east = new Button("", this.setUpIcon(CutDirection.EAST));
-        this.southeast = new Button("", this.setUpIcon(CutDirection.SOUTHEAST));
-        this.south = new Button("", this.setUpIcon(CutDirection.SOUTH));
-        this.southwest = new Button("", this.setUpIcon(CutDirection.SOUTHWEST));
-        this.west = new Button("", this.setUpIcon(CutDirection.WEST));
-        this.northwest = new Button("", this.setUpIcon(CutDirection.NORTHWEST));
-        this.none = new Button("", this.setUpIcon(CutDirection.NONE));
+        this.north = new Button("", this.setUpIcon(CutDirection.NORTH, null));
+        this.northeast = new Button("", this.setUpIcon(CutDirection.NORTHEAST, null));
+        this.east = new Button("", this.setUpIcon(CutDirection.EAST, null));
+        this.southeast = new Button("", this.setUpIcon(CutDirection.SOUTHEAST, null));
+        this.south = new Button("", this.setUpIcon(CutDirection.SOUTH, null));
+        this.southwest = new Button("", this.setUpIcon(CutDirection.SOUTHWEST, null));
+        this.west = new Button("", this.setUpIcon(CutDirection.WEST, null));
+        this.northwest = new Button("", this.setUpIcon(CutDirection.NORTHWEST, null));
+        this.none = new Button("", this.setUpIcon(CutDirection.NONE, null));
+
+        this.left = new Button("", this.setUpIcon(null, NoteType.LEFT));
+        this.right = new Button("", this.setUpIcon(null, NoteType.RIGHT));
 
         this.north.setOnAction(this);
         this.northeast.setOnAction(this);
@@ -54,6 +61,8 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
         this.west.setOnAction(this);
         this.northwest.setOnAction(this);
         this.none.setOnAction(this);
+        this.left.setOnAction(this);
+        this.right.setOnAction(this);
 
         this.directionGrid = new GridPane();
         directionGrid.add(this.north, 1, 0);
@@ -65,8 +74,10 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
         directionGrid.add(this.west, 0, 1);
         directionGrid.add(this.northwest, 0, 0);
         directionGrid.add(this.none, 1, 1);
+        directionGrid.add(this.left, 0, 3);
+        directionGrid.add(this.right, 1, 3);
 
-        this.setCenter(directionGrid);
+        this.setTop(directionGrid);
     }
 
     @Override
@@ -102,20 +113,37 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
         if (actionEvent.getSource() == this.none) {
             state.setCurrentNoteDirection(CutDirection.NONE);
         }
+        if (actionEvent.getSource() == this.left) {
+            state.setCurrentNoteType(NoteType.LEFT);
+        }
+        if (actionEvent.getSource() == this.right) {
+            state.setCurrentNoteType(NoteType.RIGHT);
+        }
     }
 
 
-
-    private Canvas setUpIcon(CutDirection dir) {
+    /**
+     * Provide either a cut direction OR a note type, not both.
+     * This will draw the arrow if it is a cut direction, or it will fill the color if it is a note type.
+     * @param dir
+     * @param type
+     * @return
+     */
+    private Canvas setUpIcon(CutDirection dir, NoteType type) {
         Canvas icon = new Canvas(noteSize, noteSize);
         GraphicsContext gc = icon.getGraphicsContext2D();
-        initCanvas(gc, icon, dir);
+        initCanvas(gc, icon, dir, type);
         return icon;
     }
 
-    private void initCanvas(GraphicsContext gc, Canvas canvas, CutDirection dir) {
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        dir.drawDirection(gc,0, 0, noteSize);
+    private void initCanvas(GraphicsContext gc, Canvas canvas, CutDirection dir, NoteType type) {
+        if (dir != null) {
+            gc.setFill(Color.BLACK);
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            dir.drawDirection(gc, 0, 0, noteSize);
+        } else if (type != null) {
+            gc.setFill(type.getColor());
+            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        }
     }
 }
