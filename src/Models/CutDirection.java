@@ -4,6 +4,8 @@ import Utils.Constants;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import static Utils.Constants.notePadding;
+
 /*
 Cuts go to the direction, e.g. North is a cut that starts on the bottom of the block and goes up through the block
  */
@@ -17,8 +19,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col + (size / 2.0), col + size};
-            double[] yCoors = {row + size, row + (size / 2.0), row + size};
+            double[] xCoors = {col + notePadding, col + (size / 2.0), col + size - notePadding};
+            double[] yCoors = {row + size - notePadding, row + (size / 2.0), row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -30,8 +32,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col + size, col + size};
-            double[] yCoors = {row, row, row + size};
+            double[] xCoors = {col + notePadding, col + size - notePadding, col + size - notePadding};
+            double[] yCoors = {row + notePadding, row + notePadding, row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -43,8 +45,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col + (size / 2.0), col};
-            double[] yCoors = {row, row + (size / 2.0), row + size};
+            double[] xCoors = {col + notePadding, col + (size / 2.0), col + notePadding};
+            double[] yCoors = {row + notePadding, row + (size / 2.0), row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -56,8 +58,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col + size, col + size, col};
-            double[] yCoors = {row, row + size, row + size};
+            double[] xCoors = {col + size - notePadding, col + size - notePadding, col + notePadding};
+            double[] yCoors = {row + notePadding, row + size - notePadding, row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -69,8 +71,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col + (size / 2.0), col + size};
-            double[] yCoors = {row, row + (size / 2.0), row};
+            double[] xCoors = {col + notePadding, col + (size / 2.0), col + size - notePadding};
+            double[] yCoors = {row + notePadding, row + (size / 2.0), row + notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -82,8 +84,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col, col + size};
-            double[] yCoors = {row, row + size, row + size};
+            double[] xCoors = {col + notePadding, col + notePadding, col + size - notePadding};
+            double[] yCoors = {row + notePadding, row + size - notePadding, row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -95,8 +97,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col + size, col + (size / 2.0), col + size};
-            double[] yCoors = {row, row + (size / 2.0), row + size};
+            double[] xCoors = {col + size - notePadding, col + (size / 2.0), col + size - notePadding};
+            double[] yCoors = {row + notePadding, row + (size / 2.0), row + size - notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -108,8 +110,8 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            double[] xCoors = {col, col, col + size};
-            double[] yCoors = {row + size, row, row};
+            double[] xCoors = {col + notePadding, col + notePadding, col + size - notePadding};
+            double[] yCoors = {row + size - notePadding, row + notePadding, row + notePadding};
             gc.fillPolygon(xCoors, yCoors, Constants.TRIANGLE_VERTICES);
         }
     },
@@ -122,7 +124,7 @@ public enum CutDirection {
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
             gc.setFill(Color.WHITE);
-            gc.fillOval(col + (size / 2.0), row + (size / 2.0), size / 2.0, size / 2.0);
+            gc.fillOval(col + (size / 4.0), row + (size / 4.0), size / 2.0, size / 2.0);
         }
     };
 

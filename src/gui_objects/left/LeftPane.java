@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 
 import java.util.Map;
 
+import static Utils.Constants.noteSize;
+
 
 public class LeftPane extends BorderPane implements ProgramStateListener {
 
@@ -30,7 +32,6 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     private int canvasHeight = 600;
     private int currentMouseRow = 0;
     private int currentMouseCol = 0;
-    private final int noteSize = 15;
 
     public LeftPane(ProgramState state) {
         super();
@@ -68,7 +69,6 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                 //Left click: primary, right click: secondary
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     drawNote(noteArea, true);
-                    //TODO add the note to the program state
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     drawNote(noteArea, false);
