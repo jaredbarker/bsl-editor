@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class RightToolBar extends ToolBar implements EventHandler<ActionEvent>, ProgramStateListener {
@@ -71,6 +72,21 @@ public class RightToolBar extends ToolBar implements EventHandler<ActionEvent>, 
 
     @Override
     public void rightToolBarSelection(RightButtonsEnum buttonPress) {
+
+    }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+
+    }
+
+    @Override
+    public void pausePlayer() {
+
+    }
+
+    @Override
+    public void playPlayer() {
 
     }
 }

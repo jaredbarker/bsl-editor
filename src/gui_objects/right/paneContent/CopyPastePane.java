@@ -6,6 +6,8 @@ import gui_objects.right.RightButtonsEnum;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 
+import java.io.File;
+
 
 public class CopyPastePane extends BorderPane implements ProgramStateListener {
 
@@ -21,6 +23,21 @@ public class CopyPastePane extends BorderPane implements ProgramStateListener {
 
     @Override
     public void rightToolBarSelection(RightButtonsEnum buttonPress) {
+
+    }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+
+    }
+
+    @Override
+    public void pausePlayer() {
+
+    }
+
+    @Override
+    public void playPlayer() {
 
     }
 }

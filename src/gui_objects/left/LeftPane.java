@@ -17,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
+import java.io.File;
 import java.util.Map;
 
 import static Utils.Constants.noteSize;
@@ -82,6 +83,21 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
 
     @Override
     public void rightToolBarSelection(RightButtonsEnum buttonPress) {
+
+    }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+
+    }
+
+    @Override
+    public void pausePlayer() {
+
+    }
+
+    @Override
+    public void playPlayer() {
 
     }
 

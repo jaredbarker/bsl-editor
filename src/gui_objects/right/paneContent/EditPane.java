@@ -14,6 +14,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
+import java.io.File;
+
 import static Utils.Constants.noteSize;
 
 
@@ -84,6 +86,22 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
     public void rightToolBarSelection(RightButtonsEnum buttonPress) {
 
     }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+
+    }
+
+    @Override
+    public void pausePlayer() {
+
+    }
+
+    @Override
+    public void playPlayer() {
+
+    }
+
     @Override
     public void handle(ActionEvent actionEvent) {
         if (actionEvent.getSource() == this.north) {

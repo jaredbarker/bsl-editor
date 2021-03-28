@@ -5,7 +5,9 @@ import Models.Note;
 import Models.Note2DPosition;
 import Models.NoteType;
 import gui_objects.right.RightButtonsEnum;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -17,12 +19,15 @@ public class ProgramState implements ProgramStateListener{
     private Map<Note2DPosition, Note> notes;
     private NoteType currentNoteType;
     private CutDirection currentNoteDirection;
+    private String currentMediaFile;
+    private Stage primaryStage;
 
     public ProgramState() {
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
         this.currentNoteDirection = CutDirection.SOUTH;
         this.currentNoteType = NoteType.LEFT;
+        this.currentMediaFile = "file:///defaultfilepath";
     }
 
     /**
@@ -39,6 +44,27 @@ public class ProgramState implements ProgramStateListener{
 
         for (ProgramStateListener listener : listenerList) {
             listener.rightToolBarSelection(buttonPress);
+        }
+    }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+        for (ProgramStateListener listener : listenerList) {
+            listener.openAudioFile(audioFile);
+        }
+    }
+
+    @Override
+    public void pausePlayer() {
+        for (ProgramStateListener listener : listenerList) {
+            listener.pausePlayer();
+        }
+    }
+
+    @Override
+    public void playPlayer() {
+        for (ProgramStateListener listener : listenerList) {
+            listener.playPlayer();
         }
     }
 
@@ -70,4 +96,19 @@ public class ProgramState implements ProgramStateListener{
         this.notes.remove(pos);
     }
 
+    public String getCurrentMediaFile() {
+        return currentMediaFile;
+    }
+
+    public void setCurrentMediaFile(String currentMediaFile) {
+        this.currentMediaFile = currentMediaFile;
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
 }

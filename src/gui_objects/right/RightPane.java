@@ -5,6 +5,7 @@ import Controls.ProgramStateListener;
 import gui_objects.right.paneContent.*;
 import javafx.scene.layout.BorderPane;
 
+import java.io.File;
 import java.util.HashMap;
 
 
@@ -34,5 +35,20 @@ public class RightPane extends BorderPane implements ProgramStateListener {
     @Override
     public void rightToolBarSelection(RightButtonsEnum buttonPress) {
         this.setCenter(rightPanesMap.get(buttonPress));
+    }
+
+    @Override
+    public void openAudioFile(File audioFile) {
+
+    }
+
+    @Override
+    public void pausePlayer() {
+
+    }
+
+    @Override
+    public void playPlayer() {
+
     }
 }

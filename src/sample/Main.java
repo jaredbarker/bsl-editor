@@ -18,6 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         ProgramState state = new ProgramState();
+        state.setPrimaryStage(primaryStage);
 //        primaryStage.setFullScreen(true);
 
         //Instantiating the BorderPane class
