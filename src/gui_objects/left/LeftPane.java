@@ -6,6 +6,7 @@ import Models.CutDirection;
 import Models.Note;
 import Models.Note2DPosition;
 import Models.NoteType;
+import Utils.NoteSpecs;
 import gui_objects.right.RightButtonsEnum;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +21,7 @@ import javafx.scene.paint.Color;
 import java.io.File;
 import java.util.Map;
 
+import static Utils.Constants.audioOffsetMultiplier;
 import static Utils.Constants.noteSize;
 
 
@@ -111,7 +113,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         gc.setStroke(Color.DARKGRAY);
         gc.setLineWidth(2);
         int dotWeight = 1;
-        int audioStripOffset = noteSize * 14;
+        int audioStripOffset = noteSize * audioOffsetMultiplier;
 
         for (int row = 0; row < canvasWidth; row += noteSize) {
             for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
@@ -144,7 +146,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             }
             gc.fillRect(currentMouseCol, currentMouseRow, noteSize, noteSize);
             drawNoteDirection(gc, currentMouseRow, currentMouseCol, state.getCurrentNoteDirection().getInt());
-            state.addNote(new Note2DPosition(currentMouseRow, currentMouseCol), new Note(0, 0, 0, state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
+            state.addNote(new Note2DPosition(currentMouseRow, currentMouseCol), new Note(0, NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
         } else {
             state.removeNote(new Note2DPosition(currentMouseRow, currentMouseCol));
         }
