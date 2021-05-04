@@ -8,7 +8,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import sample.BrianTestMedia.MediaBar;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -21,7 +20,7 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     MediaPlayer player;
     MediaView view;
     Pane mpane;
-    sample.BrianTestMedia.MediaBar bar;
+    MediaBar bar;
     ProgramState state;
 
     public Player(ProgramState state) { // Default constructor
@@ -31,18 +30,34 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     }
 
     private void initPlayer(String file) {
-        media = new Media(file);
+        state.setCompressedSamples(getCompressedSamples());
+        media = new Media("file:///" + file);
         player = new MediaPlayer(media);
         view = new MediaView(player);
         mpane = new Pane();
         mpane.getChildren().add(view); // Calling the function getChildren
-
         // inorder to add the view
         setCenter(mpane);
-        bar = new MediaBar(player); // Passing the player to MediaBar
+        bar = new MediaBar(player, state); // Passing the player to MediaBar
         setBottom(bar); // Setting the MediaBar at bottom
         setStyle("-fx-background-color:#bfc2c7"); // Adding color to the mediabar
-        player.play(); // Making the video play
+//        player.play(); // Making the video play
+        state.playPlayer();
+    }
+
+    private double[] getCompressedSamples() {
+        double[] samples = StdAudio.read(state.getCurrentMediaFile());
+        int numSamplesCompressed = samples.length / state.getBeatMapHeight();
+        double[] compressedSamples = new double[state.getBeatMapHeight()];
+        for (int i = 0; i < compressedSamples.length; i++) {
+            double sum = 0.0;
+            int startPoint = i * numSamplesCompressed;
+            for (int j = startPoint; j < startPoint + numSamplesCompressed; j++) {
+                sum += Math.abs(samples[j]);
+            }
+            compressedSamples[i] = sum / numSamplesCompressed;
+        }
+        return compressedSamples;
     }
 
     @Override

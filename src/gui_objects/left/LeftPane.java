@@ -32,7 +32,6 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     private Canvas canvas;
     private GraphicsContext noteArea;
     private int canvasWidth = 900;
-    private int canvasHeight = 600;
     private int currentMouseRow = 0;
     private int currentMouseCol = 0;
 
@@ -42,12 +41,14 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         this.state.addListener(this);
         this.setMinWidth(500);
         this.setMinHeight(500);
+        this.setPrefHeight(500);
         this.setMaxWidth(canvasWidth);
-        this.setMaxHeight(canvasHeight);
+        this.setMaxHeight(state.getBeatMapHeight());
+        this.state.setBeatMapHeight(state.getBeatMapHeight());
         this.setTop(new TextField("Audio Strip            Base Notes      Baritone Notes        Tenor Notes     Obstacles     Events"));
 
 
-        this.canvas = new Canvas(canvasWidth, canvasHeight);
+        this.canvas = new Canvas(canvasWidth, state.getBeatMapHeight());
         this.mainScrollPane = new ScrollPane();
         this.noteArea = canvas.getGraphicsContext2D();
         this.initCanvas(this.noteArea);
@@ -114,8 +115,18 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         gc.setLineWidth(2);
         int dotWeight = 1;
         int audioStripOffset = noteSize * audioOffsetMultiplier;
+        int audioStripCenter = audioStripOffset / 2;
+        state.setAudioVisualizerWidth(audioStripOffset); //TODO put this on the state originally
 
-        for (int row = 0; row < canvasWidth; row += noteSize) {
+        double[] compressedSamples = state.getCompressedSamples();
+        for (int i = 0; i < compressedSamples.length; i++) {
+            // filling image from top to bottom
+            int barLimit = Math.abs((int) (compressedSamples[i] * audioStripCenter));
+            gc.strokeLine(audioStripCenter, compressedSamples.length - i, audioStripCenter + barLimit, compressedSamples.length - i);
+            gc.strokeLine(audioStripCenter, compressedSamples.length - i, audioStripCenter - barLimit, compressedSamples.length - i);
+        }
+
+        for (int row = 0; row < state.getBeatMapHeight(); row += noteSize) {
             for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
                 if (((col - audioStripOffset) % (6 * noteSize) != noteSize * 4) && ((col - audioStripOffset) % (6 * noteSize) != noteSize * 5)) {
 //                    gc.strokeRoundRect(col, row, size, size, 2, 2); //This is if you want the whole rectangle to show

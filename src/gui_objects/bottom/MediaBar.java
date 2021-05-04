@@ -1,5 +1,6 @@
 package gui_objects.bottom;
 
+import Controls.ProgramState;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -16,7 +17,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 
 public class MediaBar extends HBox { // MediaBar extends Horizontal Box
-
+    ProgramState state;
     // introducing Sliders
     Slider time = new Slider(); // Slider for time
     Slider vol = new Slider(); // Slider for volume
@@ -24,7 +25,9 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
     Label volume = new Label("Volume: ");
     MediaPlayer player;
 
-    public MediaBar(MediaPlayer play) { // Default constructor taking
+    public MediaBar(MediaPlayer play, ProgramState state) { // Default constructor taking
+        this.state = state;
+//        this.state.addListener(this); //CANNOT call this method right now...concurrent editing exception
         // the MediaPlayer object
         player = play;
 
@@ -56,16 +59,17 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
 
                         // If the player is at the end of video
                         player.seek(player.getStartTime()); // Restart the video
-                        player.play();
+                        state.playPlayer();
                     } else {
                         // Pausing the player
-                        player.pause();
+                        state.pausePlayer();
 
                         PlayButton.setText(">");
                     }
                 } // If the video is stopped, halted or paused
                 if (status == Status.HALTED || status == Status.STOPPED || status == Status.PAUSED) {
-                    player.play(); // Start the video
+                    //player.play(); // Start the video
+                    state.playPlayer();
                     PlayButton.setText("||");
                 }
             }
@@ -83,6 +87,7 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
             public void invalidated(Observable ov) {
                 if (time.isPressed()) { // It would set the time
                     // as specified by user by pressing
+                    //TODO: how does the program state notify listeners about this?
                     player.seek(player.getMedia().getDuration().multiply(time.getValue() / 100));
                 }
             }

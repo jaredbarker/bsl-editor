@@ -21,8 +21,12 @@ public class ProgramState implements ProgramStateListener{
     private CutDirection currentNoteDirection;
     private String currentMediaFile;
     private Stage primaryStage;
+    private int beatMapHeight;
+    private int audioVisualizerWidth;
+    private double[] compressedSamples;
 
     public ProgramState() {
+        this.beatMapHeight = 10000;
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
         this.currentNoteDirection = CutDirection.SOUTH;
@@ -110,5 +114,28 @@ public class ProgramState implements ProgramStateListener{
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    public int getBeatMapHeight() {
+        return beatMapHeight;
+    }
+
+    public void setBeatMapHeight(int beatMapHeight) {
+        this.beatMapHeight = beatMapHeight;
+    }
+
+    public int getAudioVisualizerWidth() {
+        return audioVisualizerWidth;
+    }
+
+    public void setAudioVisualizerWidth(int audioVisualizerWidth) {
+        this.audioVisualizerWidth = audioVisualizerWidth;
+    }
+    public double[] getCompressedSamples() {
+        return compressedSamples;
+    }
+
+    public void setCompressedSamples(double[] compressedSamples) {
+        this.compressedSamples = compressedSamples;
     }
 }
