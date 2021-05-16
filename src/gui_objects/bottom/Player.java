@@ -84,4 +84,10 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     public void playPlayer() {
         this.player.play();
     }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){}
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){}
 }

@@ -89,4 +89,10 @@ public class RightToolBar extends ToolBar implements EventHandler<ActionEvent>, 
     public void playPlayer() {
 
     }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){}
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){}
 }

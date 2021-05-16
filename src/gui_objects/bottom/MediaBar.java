@@ -88,6 +88,7 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
                 if (time.isPressed()) { // It would set the time
                     // as specified by user by pressing
                     //TODO: how does the program state notify listeners about this?
+                    setTimeOnProgramState();
                     player.seek(player.getMedia().getDuration().multiply(time.getValue() / 100));
                 }
             }
@@ -108,6 +109,7 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
     protected void updatesValues() {
         Platform.runLater(new Runnable() {
             public void run() {
+                setTimeOnProgramState();
                 // Updating to the new time value
                 // This will move the slider while running your video
                 time.setValue(player.getCurrentTime().toMillis()/
@@ -116,5 +118,17 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
                                 * 100);
             }
         });
+    }
+
+    private void setTimeOnProgramState() {
+        double currTotalTime = state.getTotalSongTime();
+        double newTotalTime = player.getTotalDuration().toMillis();
+        if (newTotalTime != currTotalTime) {
+            //total time updated here, since it is null when media is initialized...
+            state.totalTimeUpdated(newTotalTime);
+
+        }
+
+        state.currentTimeUpdated(player.getCurrentTime().toMillis());
     }
 }

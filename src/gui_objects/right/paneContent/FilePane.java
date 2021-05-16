@@ -5,14 +5,11 @@ import Controls.ProgramStateListener;
 import gui_objects.right.RightButtonsEnum;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.net.MalformedURLException;
 
 
 public class FilePane extends BorderPane implements ProgramStateListener {
@@ -60,4 +57,10 @@ public class FilePane extends BorderPane implements ProgramStateListener {
     public void playPlayer() {
 
     }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){}
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){}
 }

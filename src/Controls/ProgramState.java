@@ -25,6 +25,10 @@ public class ProgramState implements ProgramStateListener{
     private int audioVisualizerWidth;
     private double[] compressedSamples;
 
+    private double totalSongTime;
+    private double currentSongTime;
+    private int beatsPerMinute;
+
     public ProgramState() {
         this.beatMapHeight = 10000;
         this.listenerList = new ArrayList<>();
@@ -69,6 +73,22 @@ public class ProgramState implements ProgramStateListener{
     public void playPlayer() {
         for (ProgramStateListener listener : listenerList) {
             listener.playPlayer();
+        }
+    }
+
+    @Override
+    public void currentTimeUpdated(double newCurrentTime) {
+        this.setCurrentSongTime(newCurrentTime);
+        for (ProgramStateListener listener : listenerList) {
+            listener.currentTimeUpdated(newCurrentTime);
+        }
+    }
+
+    @Override
+    public void totalTimeUpdated(double newTotalTime) {
+        this.setTotalSongTime(newTotalTime);
+        for (ProgramStateListener listener : listenerList) {
+            listener.totalTimeUpdated(newTotalTime);
         }
     }
 
@@ -137,5 +157,31 @@ public class ProgramState implements ProgramStateListener{
 
     public void setCompressedSamples(double[] compressedSamples) {
         this.compressedSamples = compressedSamples;
+    }
+
+
+    public double getTotalSongTime() {
+        return totalSongTime;
+    }
+
+    private void setTotalSongTime(double totalSongTime) {
+        this.totalSongTime = totalSongTime;
+    }
+
+    public double getCurrentSongTime() {
+        return currentSongTime;
+    }
+
+    private void setCurrentSongTime(double currentSongTime) {
+        this.currentSongTime = currentSongTime;
+
+    }
+
+    public int getBeatsPerMinute() {
+        return beatsPerMinute;
+    }
+
+    public void setBeatsPerMinute(int beatsPerMinute) {
+        this.beatsPerMinute = beatsPerMinute;
     }
 }

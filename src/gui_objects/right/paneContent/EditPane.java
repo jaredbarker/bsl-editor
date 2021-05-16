@@ -164,4 +164,10 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
             gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         }
     }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){}
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){}
 }

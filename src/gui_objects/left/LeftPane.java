@@ -21,8 +21,7 @@ import javafx.scene.paint.Color;
 import java.io.File;
 import java.util.Map;
 
-import static Utils.Constants.audioOffsetMultiplier;
-import static Utils.Constants.noteSize;
+import static Utils.Constants.*;
 
 
 public class LeftPane extends BorderPane implements ProgramStateListener {
@@ -180,5 +179,30 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
 
     private void drawNoteDirection(GraphicsContext gc, int row, int col, int cutDirection) {
             CutDirection.getDirection(cutDirection).drawDirection(gc, row, col, noteSize);
+    }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){
+        double minScroll = this.mainScrollPane.getVmin();
+        double maxScroll = this.mainScrollPane.getVmax();
+
+        double percentScrolled = newCurrTime / state.getTotalSongTime();
+
+        double vValue = (maxScroll - minScroll) * (1 - percentScrolled) + minScroll;
+        this.mainScrollPane.setVvalue(vValue);
+
+    }
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){
+        double height = state.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
+
+        //TODO: make it a double!!!
+        state.setBeatMapHeight((int) height);
+
+        initCanvas(noteArea);
+        drawBoard(noteArea, -1, -1);
+        drawNotes(noteArea);
+
     }
 }

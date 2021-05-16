@@ -19,4 +19,6 @@ public interface ProgramStateListener {
     public void openAudioFile(File audioFile);
     public void pausePlayer();
     public void playPlayer();
+    public void currentTimeUpdated(double newCurrTime);
+    public void totalTimeUpdated(double newTotalTime);
 }

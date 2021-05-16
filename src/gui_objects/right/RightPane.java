@@ -51,4 +51,10 @@ public class RightPane extends BorderPane implements ProgramStateListener {
     public void playPlayer() {
 
     }
+
+        @Override
+    public void currentTimeUpdated(double newCurrTime){}
+
+        @Override
+    public void totalTimeUpdated(double newTotalTime){}
 }
