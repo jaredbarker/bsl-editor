@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.*;
 
+import static Utils.Constants.noteSize;
+import static Utils.Constants.notesPerBeat;
+
 /**
  * Keeps track of the state of the program, and notifies listeners of changes so that they can perform the appropriate
  * action.
@@ -31,6 +34,9 @@ public class ProgramState implements ProgramStateListener{
 
     public ProgramState() {
         this.beatMapHeight = 10000;
+        this.totalSongTime = 100;
+        this.currentSongTime = 0;
+        this.beatsPerMinute = 90;
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
         this.currentNoteDirection = CutDirection.SOUTH;
@@ -87,6 +93,10 @@ public class ProgramState implements ProgramStateListener{
     @Override
     public void totalTimeUpdated(double newTotalTime) {
         this.setTotalSongTime(newTotalTime);
+        double height = this.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
+
+        //TODO: make it a double!!!
+        this.setBeatMapHeight((int) height);
         for (ProgramStateListener listener : listenerList) {
             listener.totalTimeUpdated(newTotalTime);
         }

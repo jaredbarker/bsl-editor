@@ -27,10 +27,11 @@ import static Utils.Constants.*;
 public class LeftPane extends BorderPane implements ProgramStateListener {
 
     private ProgramState state;
-    private ScrollPane mainScrollPane;
+    //private ScrollPane mainScrollPane;
     private Canvas canvas;
     private GraphicsContext noteArea;
     private int canvasWidth = 900;
+    private int canvasHeight = 450;
     private int currentMouseRow = 0;
     private int currentMouseCol = 0;
 
@@ -38,31 +39,28 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         super();
         this.state = state;
         this.state.addListener(this);
-        this.setMinWidth(500);
-        this.setMinHeight(500);
-        this.setPrefHeight(500);
+        this.setMinWidth(canvasHeight);
+        this.setMinHeight(canvasHeight);
+        this.setPrefHeight(canvasHeight);
         this.setMaxWidth(canvasWidth);
-        this.setMaxHeight(state.getBeatMapHeight());
+        this.setMaxHeight(canvasHeight);
         this.state.setBeatMapHeight(state.getBeatMapHeight());
         this.setTop(new TextField("Audio Strip            Base Notes      Baritone Notes        Tenor Notes     Obstacles     Events"));
 
 
-        this.canvas = new Canvas(canvasWidth, state.getBeatMapHeight());
-        this.mainScrollPane = new ScrollPane();
+        this.canvas = new Canvas(canvasWidth, canvasHeight);
+        //this.mainScrollPane = new ScrollPane();
         this.noteArea = canvas.getGraphicsContext2D();
-        this.initCanvas(this.noteArea);
-        this.drawBoard(noteArea, -1, -1);
-        this.mainScrollPane.setContent(this.canvas);
+        refreshBoard(-1, -1);
+        //this.mainScrollPane.setContent(this.canvas);
 
-        this.setCenter(this.mainScrollPane);
+        this.setCenter(this.canvas);
 
         canvas.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 //        System.out.println("X: " + event.getX() + "Y: " + event.getY());
-                initCanvas(noteArea);
-                drawBoard(noteArea, event.getX(), event.getY());
-                drawNotes(noteArea);
+                refreshBoard(event.getX(), event.getY());
             }
         });
         canvas.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
@@ -75,12 +73,16 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
                     drawNote(noteArea, false);
-                    initCanvas(noteArea);
-                    drawBoard(noteArea, event.getX(), event.getY());
-                    drawNotes(noteArea);
+                    refreshBoard(event.getX(), event.getY());
                 }
             }
         });
+    }
+
+    private void refreshBoard(double x, double y) {
+        initCanvas(noteArea);
+        drawBoard(noteArea, x, y, getBoardStart((int)state.getCurrentSongTime()));
+        drawNotes(noteArea);
     }
 
     @Override
@@ -108,7 +110,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void drawBoard(GraphicsContext gc, double mouse_x, double mouse_y) {
+    private void drawBoard(GraphicsContext gc, double mouse_x, double mouse_y, int boardStart) {
         //TODO draw notes as well
         gc.setStroke(Color.DARKGRAY);
         gc.setLineWidth(2);
@@ -118,14 +120,15 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         state.setAudioVisualizerWidth(audioStripOffset); //TODO put this on the state originally
 
         double[] compressedSamples = state.getCompressedSamples();
-        for (int i = 0; i < compressedSamples.length; i++) {
+        for (int i = boardStart; i < boardStart + canvasHeight && i < compressedSamples.length; i++) {
             // filling image from top to bottom
             int barLimit = Math.abs((int) (compressedSamples[i] * audioStripCenter));
-            gc.strokeLine(audioStripCenter, compressedSamples.length - i, audioStripCenter + barLimit, compressedSamples.length - i);
-            gc.strokeLine(audioStripCenter, compressedSamples.length - i, audioStripCenter - barLimit, compressedSamples.length - i);
+            int vPosition = canvasHeight - i + boardStart;
+            gc.strokeLine(audioStripCenter, vPosition, audioStripCenter + barLimit, vPosition);
+            gc.strokeLine(audioStripCenter, vPosition, audioStripCenter - barLimit, vPosition);
         }
-
-        for (int row = 0; row < state.getBeatMapHeight(); row += noteSize) {
+        //TODO fix this and uncomment it
+        /*for (int row = 0; row < state.getBeatMapHeight(); row += noteSize) {
             for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
                 if (((col - audioStripOffset) % (6 * noteSize) != noteSize * 4) && ((col - audioStripOffset) % (6 * noteSize) != noteSize * 5)) {
 //                    gc.strokeRoundRect(col, row, size, size, 2, 2); //This is if you want the whole rectangle to show
@@ -143,7 +146,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                     }
                 }
             }
-        }
+        }*/
     }
 
     private void drawNote(GraphicsContext gc, boolean isAdd){
@@ -183,26 +186,15 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
 
         @Override
     public void currentTimeUpdated(double newCurrTime){
-        double minScroll = this.mainScrollPane.getVmin();
-        double maxScroll = this.mainScrollPane.getVmax();
-
-        double percentScrolled = newCurrTime / state.getTotalSongTime();
-
-        double vValue = (maxScroll - minScroll) * (1 - percentScrolled) + minScroll;
-        this.mainScrollPane.setVvalue(vValue);
-
+        refreshBoard(-1, -1);
     }
 
         @Override
     public void totalTimeUpdated(double newTotalTime){
-        double height = state.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
+        refreshBoard(-1, -1);
+    }
 
-        //TODO: make it a double!!!
-        state.setBeatMapHeight((int) height);
-
-        initCanvas(noteArea);
-        drawBoard(noteArea, -1, -1);
-        drawNotes(noteArea);
-
+    private int getBoardStart(int currTimeInt) {
+        return (int) ((currTimeInt / state.getTotalSongTime()) * state.getBeatMapHeight());
     }
 }
