@@ -11,7 +11,6 @@ import gui_objects.right.RightButtonsEnum;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -69,20 +68,21 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                 //        System.out.println("X: " + event.getX() + "Y: " + event.getY());
                 //Left click: primary, right click: secondary
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    drawNote(noteArea, true);
+                    addNote(noteArea, true);
                 }
                 if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    drawNote(noteArea, false);
-                    refreshBoard(event.getX(), event.getY());
+                    addNote(noteArea, false);
                 }
+                refreshBoard(event.getX(), event.getY());
             }
         });
     }
 
     private void refreshBoard(double x, double y) {
+        int boardStart = getBoardStart((int)state.getCurrentSongTime());
         initCanvas(noteArea);
         drawBoard(noteArea, x, y, getBoardStart((int)state.getCurrentSongTime()));
-        drawNotes(noteArea);
+        drawNotes(noteArea, boardStart);
     }
 
     @Override
@@ -127,45 +127,40 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             gc.strokeLine(audioStripCenter, vPosition, audioStripCenter + barLimit, vPosition);
             gc.strokeLine(audioStripCenter, vPosition, audioStripCenter - barLimit, vPosition);
         }
-        //TODO fix this and uncomment it
-        /*for (int row = 0; row < state.getBeatMapHeight(); row += noteSize) {
-            for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
-                if (((col - audioStripOffset) % (6 * noteSize) != noteSize * 4) && ((col - audioStripOffset) % (6 * noteSize) != noteSize * 5)) {
+        for (int row = 0; row < state.getBeatMapHeight(); row += noteSize) {
+            int vposition = canvasHeight - row + boardStart;
+            if (vposition >= 0 - noteSize && vposition <= canvasHeight) { // only draw what is currently in the viewport
+                for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
+                    if (((col - audioStripOffset) % (6 * noteSize) != noteSize * 4) && ((col - audioStripOffset) % (6 * noteSize) != noteSize * 5)) {
 //                    gc.strokeRoundRect(col, row, size, size, 2, 2); //This is if you want the whole rectangle to show
-                    gc.strokeRect(col + noteSize, row + noteSize, dotWeight,dotWeight); //creates dots at the edge of the note rectangle area
-                    if ((col - audioStripOffset) % (6 * noteSize) == noteSize * 0) {
-                        gc.strokeRect(col, row + noteSize, dotWeight,dotWeight); //creates a dot on the bottom left for the squares after spaces
-                    }
+                        gc.strokeRect(col + noteSize, vposition + noteSize, dotWeight, dotWeight); //creates dots at the edge of the note rectangle area
+                        if ((col - audioStripOffset) % (6 * noteSize) == noteSize * 0) {
+                            gc.strokeRect(col, vposition + noteSize, dotWeight, dotWeight); //creates a dot on the bottom left for the squares after spaces
+                        }
 
-                    // Set the hover fill cover to where the mouse location is:
-                    if (mouse_x - col < noteSize && mouse_y - row < noteSize && mouse_x - col > 0 && mouse_y - row > 0) {
-                        currentMouseCol = col;
-                        currentMouseRow = row;
-                        gc.setFill(Color.DARKGRAY);
-                        gc.fillRoundRect(col, row, noteSize, noteSize, 2, 2);
+                        // Set the hover fill cover to where the mouse location is:
+                        if (mouse_x - col < noteSize && mouse_y - vposition < noteSize && mouse_x - col > 0 && mouse_y - vposition > 0) {
+                            currentMouseCol = col;
+                            currentMouseRow = vposition;
+                            gc.setFill(Color.DARKGRAY);
+                            gc.fillRoundRect(col, vposition, noteSize, noteSize, 2, 2);
+                        }
                     }
                 }
             }
-        }*/
-    }
-
-    private void drawNote(GraphicsContext gc, boolean isAdd){
-        //TODO: figure out the right info to put into the note.
-        if (isAdd) {
-            if (state.getCurrentNoteType() == NoteType.RIGHT) {
-                gc.setFill(NoteType.RIGHT.getColor());
-            } else {
-                gc.setFill(NoteType.LEFT.getColor());
-            }
-            gc.fillRect(currentMouseCol, currentMouseRow, noteSize, noteSize);
-            drawNoteDirection(gc, currentMouseRow, currentMouseCol, state.getCurrentNoteDirection().getInt());
-            state.addNote(new Note2DPosition(currentMouseRow, currentMouseCol), new Note(0, NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
-        } else {
-            state.removeNote(new Note2DPosition(currentMouseRow, currentMouseCol));
         }
     }
 
-    private void drawNotes(GraphicsContext gc) {
+    private void addNote(GraphicsContext gc, boolean isAdd){
+        if (isAdd) {
+            double time = state.getCurrentSongTime() + (canvasHeight - currentMouseRow)/ (double) noteSize * noteTime();
+            state.addNote(new Note2DPosition((int)time, currentMouseCol), new Note(time , NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
+        } else {
+            state.removeNote(new Note2DPosition(currentMouseRow, currentMouseCol)); //TODO: fix remove
+        }
+    }
+
+    private void drawNotes(GraphicsContext gc, int boardStart) {
 
         for (Map.Entry<Note2DPosition,Note> entry : this.state.getNotes().entrySet()) {
             Note2DPosition pos = entry.getKey();
@@ -175,8 +170,12 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             } else {
                 gc.setFill(NoteType.LEFT.getColor());
             }
-            gc.fillRect(pos.getCol(), pos.getRow(), noteSize, noteSize);
-            drawNoteDirection(gc, pos.getRow(), pos.getCol(), note.get_cutDirection());
+
+            int worldCoord = getBoardStart((int)note.get_time());
+            int vposition = canvasHeight - worldCoord + boardStart;
+
+            gc.fillRect(pos.getCol(), vposition, noteSize, noteSize);
+            drawNoteDirection(gc, vposition, pos.getCol(), note.get_cutDirection());
         }
     }
 
@@ -197,4 +196,9 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     private int getBoardStart(int currTimeInt) {
         return (int) ((currTimeInt / state.getTotalSongTime()) * state.getBeatMapHeight());
     }
+
+    private double noteTime() {
+        return state.getTotalSongTime() * noteSize / state.getBeatMapHeight();
+    }
+
 }
