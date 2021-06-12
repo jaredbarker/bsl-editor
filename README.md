@@ -39,3 +39,6 @@ cherry on top/future features:
 	-auto detect beat/time signature
 	-auto fill in beat spaces
 	-3D visualizer to "test" the map
+	
+	simple 2 json file starts cut direction on base row: up and then going clockwise around
+    to next mid row at later time and finally top row at latest time
