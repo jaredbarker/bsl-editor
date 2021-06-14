@@ -67,11 +67,13 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             public void handle(MouseEvent event) {
                 //        System.out.println("X: " + event.getX() + "Y: " + event.getY());
                 //Left click: primary, right click: secondary
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    addNote(noteArea, true);
-                }
-                if (event.getButton().equals(MouseButton.SECONDARY)) {
-                    addNote(noteArea, false);
+                if (!state.isPlaying()) {
+                    if (event.getButton().equals(MouseButton.PRIMARY)) {
+                        addNote(noteArea, true);
+                    }
+                    if (event.getButton().equals(MouseButton.SECONDARY)) {
+                        addNote(noteArea, false);
+                    }
                 }
                 refreshBoard(event.getX(), event.getY());
             }
@@ -152,11 +154,11 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     }
 
     private void addNote(GraphicsContext gc, boolean isAdd){
+        double time = state.getCurrentSongTime() + (canvasHeight - currentMouseRow - noteSize)/ (double) noteSize * noteTime(state);
         if (isAdd) {
-            double time = state.getCurrentSongTime() + (canvasHeight - currentMouseRow)/ (double) noteSize * noteTime();
             state.addNote(new Note2DPosition((int)time, currentMouseCol), new Note(time , NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
         } else {
-            state.removeNote(new Note2DPosition(currentMouseRow, currentMouseCol)); //TODO: fix remove
+            state.removeNote(new Note2DPosition((int)time, currentMouseCol)); //TODO: fix remove
         }
     }
 
@@ -172,7 +174,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             }
 
             int worldCoord = getBoardStart((int)note.get_time());
-            int vposition = canvasHeight - worldCoord + boardStart;
+            int vposition = canvasHeight + boardStart - worldCoord - noteSize;
 
             gc.fillRect(pos.getCol(), vposition, noteSize, noteSize);
             drawNoteDirection(gc, vposition, pos.getCol(), note.get_cutDirection());
@@ -197,7 +199,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         return (int) ((currTimeInt / state.getTotalSongTime()) * state.getBeatMapHeight());
     }
 
-    private double noteTime() {
+    public static double noteTime(ProgramState state) {
         return state.getTotalSongTime() * noteSize / state.getBeatMapHeight();
     }
 

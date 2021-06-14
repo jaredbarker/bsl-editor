@@ -1,6 +1,7 @@
 package gui_objects.bottom;
 
 import Controls.ProgramState;
+import gui_objects.left.LeftPane;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -75,6 +76,20 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
             }
         });
 
+        //Brian and Jared: jumping to the start of a note when the player pauses
+        player.statusProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                Status status = player.getStatus(); // To get the status of Player
+                if (status == Status.HALTED || status == Status.STOPPED || status == Status.PAUSED) {
+                    double jumpTime = Math.round(player.getCurrentTime().toMillis() / LeftPane.noteTime(state)) * LeftPane.noteTime(state);
+                    time.setValue(jumpTime / player.getTotalDuration().toMillis() * 100);
+                    player.seek(player.getMedia().getDuration().multiply(time.getValue() / 100));
+                    state.currentTimeUpdated(player.getCurrentTime().toMillis());
+                }
+            }
+        });
+
         // Providing functionality to time slider
         player.currentTimeProperty().addListener(new InvalidationListener() {
             public void invalidated(Observable ov) {
@@ -88,8 +103,10 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
                 if (time.isPressed()) { // It would set the time
                     // as specified by user by pressing
                     //TODO: how does the program state notify listeners about this?
+                    double direction = (time.getValue()/100 * player.getTotalDuration().toMillis()) - state.getCurrentSongTime();
+                    double jumpTime = Math.round(direction / LeftPane.noteTime(state)) * LeftPane.noteTime(state);
                     setTimeOnProgramState();
-                    player.seek(player.getMedia().getDuration().multiply(time.getValue() / 100));
+                    player.seek(player.getMedia().getDuration().multiply((state.getCurrentSongTime() + jumpTime) / player.getTotalDuration().toMillis()));
                 }
             }
         });

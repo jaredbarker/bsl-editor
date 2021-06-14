@@ -32,6 +32,8 @@ public class ProgramState implements ProgramStateListener{
     private double currentSongTime;
     private int beatsPerMinute;
 
+    private boolean isPlaying;
+
     public ProgramState() {
         this.beatMapHeight = 10000;
         this.totalSongTime = 100;
@@ -70,6 +72,7 @@ public class ProgramState implements ProgramStateListener{
 
     @Override
     public void pausePlayer() {
+        this.isPlaying = false;
         for (ProgramStateListener listener : listenerList) {
             listener.pausePlayer();
         }
@@ -77,6 +80,7 @@ public class ProgramState implements ProgramStateListener{
 
     @Override
     public void playPlayer() {
+        this.isPlaying = true;
         for (ProgramStateListener listener : listenerList) {
             listener.playPlayer();
         }
@@ -193,5 +197,12 @@ public class ProgramState implements ProgramStateListener{
 
     public void setBeatsPerMinute(int beatsPerMinute) {
         this.beatsPerMinute = beatsPerMinute;
+    }
+    public boolean isPlaying() {
+        return isPlaying;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
     }
 }
