@@ -2,7 +2,7 @@ package gui_objects.left;
 
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
-import Models.CutDirection;
+import Models.CutDirection;//and now I can edit things here!
 import Models.Note;
 import Models.Note2DPosition;
 import Models.NoteType;
