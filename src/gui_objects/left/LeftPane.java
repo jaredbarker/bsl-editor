@@ -2,7 +2,7 @@ package gui_objects.left;
 
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
-import Models.CutDirection;
+import Models.CutDirection;//and now I can edit things here!
 import Models.Note;
 import Models.Note2DPosition;
 import Models.NoteType;
@@ -133,10 +133,10 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
             int vposition = canvasHeight - row + boardStart;
             if (vposition >= 0 - noteSize && vposition <= canvasHeight) { // only draw what is currently in the viewport
                 for (int col = audioStripOffset; col < canvasWidth; col += noteSize) {
-                    if (((col - audioStripOffset) % (6 * noteSize) != noteSize * 4) && ((col - audioStripOffset) % (6 * noteSize) != noteSize * 5)) {
+                    if (((col - audioStripOffset) % (rowPlusBuffer) != rowNoBuffer) && ((col - audioStripOffset) % (rowPlusBuffer) != rowFirstAndLastDot)) {
 //                    gc.strokeRoundRect(col, row, size, size, 2, 2); //This is if you want the whole rectangle to show
                         gc.strokeRect(col + noteSize, vposition + noteSize, dotWeight, dotWeight); //creates dots at the edge of the note rectangle area
-                        if ((col - audioStripOffset) % (6 * noteSize) == noteSize * 0) {
+                        if ((col - audioStripOffset) % (rowPlusBuffer) == noteSize * 0) {
                             gc.strokeRect(col, vposition + noteSize, dotWeight, dotWeight); //creates a dot on the bottom left for the squares after spaces
                         }
 
