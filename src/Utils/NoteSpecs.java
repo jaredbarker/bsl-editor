@@ -13,6 +13,6 @@ public class NoteSpecs {
     }
 
     public static int getNoteIndex(int x_coor) {
-        return (((x_coor - Constants.noteSize) - Constants.audioOffsetMultiplier) % (6 * Constants.noteSize)) / Constants.noteSize;
+        return (((x_coor - Constants.noteSize) - Constants.audioOffsetMultiplier) % (Constants.rowPlusBuffer)) / Constants.noteSize;
     }
 }
