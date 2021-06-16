@@ -14,6 +14,7 @@ import java.io.File;
 
 public class FilePane extends BorderPane implements ProgramStateListener {
     private Button openAudioFile;
+    private Button save;
     private ProgramState state;
     private FileChooser fileChooser;
 
@@ -22,6 +23,12 @@ public class FilePane extends BorderPane implements ProgramStateListener {
         this.state = state;
         this.state.addListener(this);
         this.fileChooser = new FileChooser();
+        this.save = new Button("Save");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                state.save();
+            }
+        });
         this.openAudioFile = new Button("Open Audio");
         openAudioFile.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
@@ -36,6 +43,7 @@ public class FilePane extends BorderPane implements ProgramStateListener {
             }
         });
         this.setCenter(this.openAudioFile);
+        this.setTop(this.save);
     }
 
     @Override

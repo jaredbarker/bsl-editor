@@ -1,13 +1,13 @@
 package Controls;
 
-import Models.CutDirection;
-import Models.Note;
-import Models.Note2DPosition;
-import Models.NoteType;
+import Models.*;
+import Utils.JsonHandler;
 import gui_objects.right.RightButtonsEnum;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 import static Utils.Constants.noteSize;
@@ -20,6 +20,7 @@ import static Utils.Constants.notesPerBeat;
 public class ProgramState implements ProgramStateListener{
     private List<ProgramStateListener> listenerList;
     private Map<Note2DPosition, Note> notes;
+    private BeatMapInfo beatMap;
     private NoteType currentNoteType;
     private CutDirection currentNoteDirection;
     private String currentMediaFile;
@@ -35,6 +36,7 @@ public class ProgramState implements ProgramStateListener{
     private boolean isPlaying;
 
     public ProgramState() {
+        this.beatMap = new BeatMapInfo();
         this.beatMapHeight = 10000;
         this.totalSongTime = 100;
         this.currentSongTime = 0;
@@ -46,6 +48,20 @@ public class ProgramState implements ProgramStateListener{
         this.currentMediaFile = "file:///defaultfilepath";
     }
 
+    public void save() {
+        for (Map.Entry<Note2DPosition,Note> entry : this.notes.entrySet()) {
+            beatMap.get_notes().add(entry.getValue());
+            //TODO add all the other info
+        }
+        try {
+            FileWriter file = new FileWriter("resources/savefile.json");
+            file.write(JsonHandler.toJson(beatMap));
+            file.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     /**
      * Adds a new listener to be notified when the state of the program changes.
      * @param listener the listener to be added.
