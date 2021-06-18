@@ -170,4 +170,7 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
 
         @Override
     public void totalTimeUpdated(double newTotalTime){}
+
+     @Override
+    public void scrollBeatmap(double jumpVector){}
 }

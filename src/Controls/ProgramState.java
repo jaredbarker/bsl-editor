@@ -127,6 +127,13 @@ public class ProgramState implements ProgramStateListener{
         }
     }
 
+    @Override
+    public void scrollBeatmap(double jumpVector){
+        for (ProgramStateListener listener : listenerList) {
+            listener.scrollBeatmap(jumpVector);
+        }
+    }
+
     public NoteType getCurrentNoteType() {
         return currentNoteType;
     }

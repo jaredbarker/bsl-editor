@@ -71,4 +71,7 @@ public class FilePane extends BorderPane implements ProgramStateListener {
 
         @Override
     public void totalTimeUpdated(double newTotalTime){}
+
+     @Override
+    public void scrollBeatmap(double jumpVector){}
 }

@@ -21,4 +21,6 @@ public interface ProgramStateListener {
     public void playPlayer();
     public void currentTimeUpdated(double newCurrTime);
     public void totalTimeUpdated(double newTotalTime);
+    public void scrollBeatmap(double jumpVector);
+
 }

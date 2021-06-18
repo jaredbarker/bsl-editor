@@ -2,7 +2,6 @@ package gui_objects.left;
 
 import Controls.ProgramState;
 import Controls.ProgramStateListener;
-import Models.CutDirection;//and now I can edit things here!
 import Models.Note;
 import Models.Note2DPosition;
 import Models.NoteType;
@@ -14,6 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
@@ -30,7 +30,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     private Canvas canvas;
     private GraphicsContext noteArea;
     private int canvasWidth = 900;
-    private int canvasHeight = 450;
+    private int canvasHeight = 750;
     private int currentMouseRow = 0;
     private int currentMouseCol = 0;
 
@@ -38,13 +38,8 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         super();
         this.state = state;
         this.state.addListener(this);
-        this.setMinWidth(canvasHeight);
-        this.setMinHeight(canvasHeight);
-        this.setPrefHeight(canvasHeight);
-        this.setMaxWidth(canvasWidth);
-        this.setMaxHeight(canvasHeight);
         this.state.setBeatMapHeight(state.getBeatMapHeight());
-        this.setTop(new TextField("Audio Strip            Base Notes      Baritone Notes        Tenor Notes     Obstacles     Events"));
+        this.setTop(new TextField("                     Audio Strip                       Base Notes      Baritone Notes      Tenor Notes        Obstacles             Events"));
 
 
         this.canvas = new Canvas(canvasWidth, canvasHeight);
@@ -76,6 +71,14 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                     }
                 }
                 refreshBoard(event.getX(), event.getY());
+            }
+        });
+
+        canvas.addEventFilter(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent event) {
+                double vertScroll = event.getDeltaY();
+                state.scrollBeatmap(vertScroll / noteSize * noteTime(state));
             }
         });
     }
@@ -203,4 +206,6 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         return state.getTotalSongTime() * noteSize / state.getBeatMapHeight();
     }
 
+     @Override
+    public void scrollBeatmap(double jumpVector){}
 }

@@ -102,11 +102,9 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
             public void invalidated(Observable ov) {
                 if (time.isPressed()) { // It would set the time
                     // as specified by user by pressing
-                    //TODO: how does the program state notify listeners about this?
-                    double direction = (time.getValue()/100 * player.getTotalDuration().toMillis()) - state.getCurrentSongTime();
-                    double jumpTime = Math.round(direction / LeftPane.noteTime(state)) * LeftPane.noteTime(state);
-                    setTimeOnProgramState();
-                    player.seek(player.getMedia().getDuration().multiply((state.getCurrentSongTime() + jumpTime) / player.getTotalDuration().toMillis()));
+                    //jumpVector is the number of milliseconds to move forward or backward in the song
+                    double jumpVector = (time.getValue()/100 * player.getTotalDuration().toMillis()) - state.getCurrentSongTime();
+                    stepSongTimeByNoteIncrements(jumpVector);
                 }
             }
         });
@@ -120,6 +118,13 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
                 }
             }
         });
+    }
+
+    public void stepSongTimeByNoteIncrements(double jumpVector) {
+        //jumpTime rounds the jump amount to be to the nearest note
+        double jumpTime = Math.round(jumpVector / LeftPane.noteTime(state)) * LeftPane.noteTime(state);
+        setTimeOnProgramState();
+        player.seek(player.getMedia().getDuration().multiply((state.getCurrentSongTime() + jumpTime) / player.getTotalDuration().toMillis()));
     }
 
     // Outside the constructor

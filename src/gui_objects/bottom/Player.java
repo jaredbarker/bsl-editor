@@ -92,4 +92,9 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     public void totalTimeUpdated(double newTotalTime){
         state.setCompressedSamples(getCompressedSamples());
     }
+
+     @Override
+    public void scrollBeatmap(double jumpVector){
+        bar.stepSongTimeByNoteIncrements(jumpVector);
+     }
 }

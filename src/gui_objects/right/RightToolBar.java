@@ -95,4 +95,7 @@ public class RightToolBar extends ToolBar implements EventHandler<ActionEvent>, 
 
         @Override
     public void totalTimeUpdated(double newTotalTime){}
+
+     @Override
+    public void scrollBeatmap(double jumpVector){}
 }
