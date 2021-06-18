@@ -182,7 +182,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     }
 
     private void drawNoteDirection(GraphicsContext gc, int row, int col, int cutDirection) {
-            CutDirection.getDirection(cutDirection).drawDirection(gc, row, col, noteSize);
+            state.getCutDirection(cutDirection).drawDirection(gc, row, col, noteSize);
     }
 
         @Override

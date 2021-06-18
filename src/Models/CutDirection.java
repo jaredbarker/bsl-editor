@@ -27,7 +27,7 @@ public enum CutDirection {
     NORTHEAST {
         @Override
         public int getInt() {
-            return 1;
+            return 5;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -40,7 +40,7 @@ public enum CutDirection {
     EAST {
         @Override
         public int getInt() {
-            return 2;
+            return 3;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -53,7 +53,7 @@ public enum CutDirection {
     SOUTHEAST {
         @Override
         public int getInt() {
-            return 3;
+            return 7;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -66,7 +66,7 @@ public enum CutDirection {
     SOUTH {
         @Override
         public int getInt() {
-            return 4;
+            return 1;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -79,7 +79,7 @@ public enum CutDirection {
     SOUTHWEST {
         @Override
         public int getInt() {
-            return 5;
+            return 6;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -92,7 +92,7 @@ public enum CutDirection {
     WEST {
         @Override
         public int getInt() {
-            return 6;
+            return 2;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -105,7 +105,7 @@ public enum CutDirection {
     NORTHWEST {
         @Override
         public int getInt() {
-            return 7;
+            return 4;
         }
         @Override
         public void drawDirection(GraphicsContext gc, int row, int col, int size) {
@@ -129,28 +129,6 @@ public enum CutDirection {
     };
 
     public abstract int getInt();
-
-    public static CutDirection getDirection(int cutNum) {
-        if (cutNum == 0) {
-            return CutDirection.NORTH;
-        } else if (cutNum == 1) {
-            return CutDirection.NORTHEAST;
-        } else if (cutNum == 2) {
-            return CutDirection.EAST;
-        } else if (cutNum == 3) {
-            return CutDirection.SOUTHEAST;
-        } else if (cutNum == 4) {
-            return CutDirection.SOUTH;
-        } else if (cutNum == 5) {
-            return CutDirection.SOUTHWEST;
-        } else if (cutNum == 6) {
-            return CutDirection.WEST;
-        } else if (cutNum == 7) {
-            return CutDirection.NORTHWEST;
-        } else {
-            return CutDirection.NONE;
-        }
-    }
 
     public abstract void drawDirection(GraphicsContext gc, int row, int col, int size);
 }

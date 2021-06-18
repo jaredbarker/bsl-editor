@@ -28,6 +28,7 @@ public class ProgramState implements ProgramStateListener{
     private int beatMapHeight;
     private int audioVisualizerWidth;
     private double[] compressedSamples;
+    private HashMap<Integer, CutDirection> intToCutDirection;
 
     private double totalSongTime;
     private double currentSongTime;
@@ -43,6 +44,10 @@ public class ProgramState implements ProgramStateListener{
         this.beatsPerMinute = 90;
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
+        this.intToCutDirection = new HashMap<>();
+        for (CutDirection dir : CutDirection.values()) {
+            this.intToCutDirection.put(dir.getInt(), dir);
+        }
         this.currentNoteDirection = CutDirection.SOUTH;
         this.currentNoteType = NoteType.LEFT;
         this.currentMediaFile = "file:///defaultfilepath";
@@ -220,5 +225,9 @@ public class ProgramState implements ProgramStateListener{
 
     public void setPlaying(boolean playing) {
         isPlaying = playing;
+    }
+
+    public CutDirection getCutDirection(int dir) {
+        return this.intToCutDirection.get(dir);
     }
 }
