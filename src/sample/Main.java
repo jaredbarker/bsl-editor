@@ -1,14 +1,18 @@
 package sample;
 
 import Controls.ProgramState;
+import Utils.Constants;
 import gui_objects.bottom.BottomPane;
 import gui_objects.left.LeftPane;
 import gui_objects.right.RightPane;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -23,6 +27,17 @@ public class Main extends Application {
 
         //Instantiating the BorderPane class
         BorderPane bPane = new BorderPane();
+        bPane.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.UP)) {
+                    state.scrollBeatmap(Constants.stepRoundoff * LeftPane.noteTime(state));
+                } else if (event.getCode().equals(KeyCode.DOWN)) {
+                    state.scrollBeatmap(Constants.negStepRoundoff * LeftPane.noteTime(state));
+                }
+
+            }
+        });
 
         //Setting the top, bottom, center, right and left nodes to the pane
         bPane.setBottom(new BottomPane(state));

@@ -15,4 +15,6 @@ public class Constants {
     public static final int rowPlusBuffer = noteSize * 6;
     public static final int rowNoBuffer = noteSize * 4;
     public static final int rowFirstAndLastDot = noteSize * 5;
+    public static final double stepRoundoff = 1.1;
+    public static final double negStepRoundoff = -1.1;
 }
