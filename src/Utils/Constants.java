@@ -17,4 +17,6 @@ public class Constants {
     public static final int rowFirstAndLastDot = noteSize * 5;
     public static final double stepRoundoff = 1.1;
     public static final double negStepRoundoff = -1.1;
+    public static final double rateIncrement = 0.25;
+    public static final double defaultRate = 1.0;
 }

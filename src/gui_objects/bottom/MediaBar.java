@@ -1,6 +1,7 @@
 package gui_objects.bottom;
 
 import Controls.ProgramState;
+import Utils.Constants;
 import gui_objects.left.LeftPane;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -23,6 +24,9 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
     Slider time = new Slider(); // Slider for time
     Slider vol = new Slider(); // Slider for volume
     Button PlayButton = new Button("||"); // For pausing the player
+    Button faster = new Button("  >>  ");
+    Button slower = new Button("  <<  ");
+    Label rate = new Label("   1.0   ");
     Label volume = new Label("Volume: ");
     MediaPlayer player;
 
@@ -44,10 +48,32 @@ public class MediaBar extends HBox { // MediaBar extends Horizontal Box
         // Adding the components to the bottom
 
         getChildren().add(PlayButton); // Playbutton
+        getChildren().add(rate);
+        getChildren().add(slower);
+        getChildren().add(faster);
         getChildren().add(time); // time slider
         getChildren().add(volume); // volume slider
         getChildren().add(vol);
 
+        slower.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (player.getRate() > Constants.rateIncrement) {
+                    player.setRate(player.getRate() - Constants.rateIncrement);
+                    rate.setText("   " + Double.toString(player.getRate()) + "   ");
+                }
+            }
+        });
+
+        faster.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (player.getRate() < Constants.defaultRate) {
+                    player.setRate(player.getRate() + Constants.rateIncrement);
+                    rate.setText("   " + Double.toString(player.getRate()) + "   ");
+                }
+            }
+        });
         // Adding Functionality
         // to play the media player
         PlayButton.setOnAction(new EventHandler<ActionEvent>() {
