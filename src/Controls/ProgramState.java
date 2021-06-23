@@ -1,6 +1,10 @@
 package Controls;
 
 import Models.*;
+import Models.Json.BeatMapDifficulty;
+import Models.Json.BeatMapInfo;
+import Models.Json.BeatMapLevelJson;
+import Models.Json.BeatMapSetItem;
 import Utils.JsonHandler;
 import gui_objects.right.RightButtonsEnum;
 import javafx.stage.Stage;
@@ -20,7 +24,8 @@ import static Utils.Constants.notesPerBeat;
 public class ProgramState implements ProgramStateListener{
     private List<ProgramStateListener> listenerList;
     private Map<Note2DPosition, Note> notes;
-    private BeatMapInfo beatMap;
+    private BeatMapLevelJson beatMap;
+    private BeatMapInfo beatMapInfo;
     private NoteType currentNoteType;
     private CutDirection currentNoteDirection;
     private String currentMediaFile;
@@ -37,7 +42,8 @@ public class ProgramState implements ProgramStateListener{
     private boolean isPlaying;
 
     public ProgramState() {
-        this.beatMap = new BeatMapInfo();
+        this.beatMap = new BeatMapLevelJson();
+        this.beatMapInfo = new BeatMapInfo();
         this.beatMapHeight = 10000;
         this.totalSongTime = 100;
         this.currentSongTime = 0;
@@ -54,13 +60,24 @@ public class ProgramState implements ProgramStateListener{
     }
 
     public void save() {
+        //TODO: put this first part in a default level creation function
+        String levelFileName = "sampleLevel";
+        BeatMapDifficulty expert = new BeatMapDifficulty("Expert", 7, levelFileName, 0.0, 0.0);
+        BeatMapSetItem set = new BeatMapSetItem("Standard", new ArrayList<>(Arrays.asList(expert)));
+        this.beatMapInfo.set_difficultyBeatmapSets(new ArrayList<>(Arrays.asList(set)));
+
         for (Map.Entry<Note2DPosition,Note> entry : this.notes.entrySet()) {
             beatMap.get_notes().add(entry.getValue());
             //TODO add all the other info
         }
+        writeObjectToFile(beatMap, levelFileName);
+        writeObjectToFile(beatMapInfo, "sampleInfo");
+    }
+
+    private void writeObjectToFile(Object object, String name) {
         try {
-            FileWriter file = new FileWriter("resources/savefile.json");
-            file.write(JsonHandler.toJson(beatMap));
+            FileWriter file = new FileWriter("resources/" + name + ".json");
+            file.write(JsonHandler.toJson(object));
             file.close();
         } catch (IOException e) {
             // TODO Auto-generated catch block

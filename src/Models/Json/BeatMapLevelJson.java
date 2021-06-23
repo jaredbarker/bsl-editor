@@ -1,23 +1,25 @@
-package Models;
+package Models.Json;
+
+import Models.Note;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeatMapInfo {
+public class BeatMapLevelJson {
     private String _version;
     private List<Integer> _events;
     private List<Note> _notes;
     private List<Integer> _waypoints;
     private List<Integer> _obstacles;
-    private int _specialEventsKeywordFilters;
+    private KeyWordFilters _specialEventsKeywordFilters;
 
-    public BeatMapInfo() {
+    public BeatMapLevelJson() {
         this._version = "";
         this._events = new ArrayList<>();
         this._notes = new ArrayList<>();
         this._waypoints = new ArrayList<>();
         this._obstacles = new ArrayList<>();
-        this._specialEventsKeywordFilters = 0;
+        this._specialEventsKeywordFilters = new KeyWordFilters();
     }
 
     public String get_version() {
@@ -60,11 +62,11 @@ public class BeatMapInfo {
         this._obstacles = _obstacles;
     }
 
-    public int get_specialEventsKeywordFilters() {
+    public KeyWordFilters get_specialEventsKeywordFilters() {
         return _specialEventsKeywordFilters;
     }
 
-    public void set_specialEventsKeywordFilters(int _specialEventsKeywordFilters) {
+    public void set_specialEventsKeywordFilters(KeyWordFilters _specialEventsKeywordFilters) {
         this._specialEventsKeywordFilters = _specialEventsKeywordFilters;
     }
 }

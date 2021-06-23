@@ -1,13 +1,13 @@
 package Utils;
 
-import Models.BeatMapInfo;
+import Models.Json.BeatMapLevelJson;
 import junit.framework.TestCase;
 
 public class JsonHandlerTest extends TestCase {
-    private BeatMapInfo map;
+    private BeatMapLevelJson map;
 
     public void setUp() throws Exception {
-        map = new BeatMapInfo();
+        map = new BeatMapLevelJson();
         super.setUp();
     }
 
