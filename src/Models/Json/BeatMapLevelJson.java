@@ -14,7 +14,7 @@ public class BeatMapLevelJson {
     private KeyWordFilters _specialEventsKeywordFilters;
 
     public BeatMapLevelJson() {
-        this._version = "";
+        this._version = "2.2.0";
         this._events = new ArrayList<>();
         this._notes = new ArrayList<>();
         this._waypoints = new ArrayList<>();

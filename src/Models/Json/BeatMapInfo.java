@@ -9,7 +9,7 @@ public class BeatMapInfo {
     private String _songSubName;
     private String _songAuthorName;
     private String _levelAuthorName;
-    private double _beatsPerMinute;
+    private int _beatsPerMinute;
     private double _songTimeOffset;
     private double _shuffle;
     private double _shufflePeriod;
@@ -27,7 +27,7 @@ public class BeatMapInfo {
         this._songSubName = "";
         this._songAuthorName = "";
         this._levelAuthorName = "";
-        this._beatsPerMinute = 0.0;
+        this._beatsPerMinute = 0;
         this._songTimeOffset = 0.0;
         this._shuffle = 0.0;
         this._shufflePeriod = 0.0;
@@ -38,6 +38,25 @@ public class BeatMapInfo {
         this._environmentName = "";
         this._allDirectionsEnvironmentName = "";
         this._difficultyBeatmapSets = new ArrayList<>();
+    }
+
+    public BeatMapInfo(String _version, String _songName, String _songSubName, String _songAuthorName, String _levelAuthorName, int _beatsPerMinute, double _songTimeOffset, double _shuffle, double _shufflePeriod, double _previewStartTime, double _previewDuration, String _songFilename, String _coverImageFilename, String _environmentName, String _allDirectionsEnvironmentName, List<BeatMapSetItem> _difficultyBeatmapSets) {
+        this._version = _version;
+        this._songName = _songName;
+        this._songSubName = _songSubName;
+        this._songAuthorName = _songAuthorName;
+        this._levelAuthorName = _levelAuthorName;
+        this._beatsPerMinute = _beatsPerMinute;
+        this._songTimeOffset = _songTimeOffset;
+        this._shuffle = _shuffle;
+        this._shufflePeriod = _shufflePeriod;
+        this._previewStartTime = _previewStartTime;
+        this._previewDuration = _previewDuration;
+        this._songFilename = _songFilename;
+        this._coverImageFilename = _coverImageFilename;
+        this._environmentName = _environmentName;
+        this._allDirectionsEnvironmentName = _allDirectionsEnvironmentName;
+        this._difficultyBeatmapSets = _difficultyBeatmapSets;
     }
 
     public String get_version() {
@@ -80,11 +99,11 @@ public class BeatMapInfo {
         this._levelAuthorName = _levelAuthorName;
     }
 
-    public double get_beatsPerMinute() {
+    public int get_beatsPerMinute() {
         return _beatsPerMinute;
     }
 
-    public void set_beatsPerMinute(double _beatsPerMinute) {
+    public void set_beatsPerMinute(int _beatsPerMinute) {
         this._beatsPerMinute = _beatsPerMinute;
     }
 

@@ -8,9 +8,9 @@ public class BeatMapDifficulty {
     private double _noteJumpStartBeatOffset;
 
     public BeatMapDifficulty() {
-        this._difficulty = "";
-        this._difficultyRank = 0;
-        this._beatmapFilename = "";
+        this._difficulty = "Expert";
+        this._difficultyRank = 7;
+        this._beatmapFilename = "Expert.dat";
         this._noteJumpMovementSpeed = 0.0;
         this._noteJumpStartBeatOffset = 0.0;
     }

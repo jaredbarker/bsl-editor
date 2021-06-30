@@ -59,24 +59,34 @@ public class ProgramState implements ProgramStateListener{
         this.currentMediaFile = "file:///defaultfilepath";
     }
 
+    public String parseMediaFile() {
+        for (int i = currentMediaFile.length() - 1; i >= 0; i--) {
+            if (currentMediaFile.charAt(i) == '/' || currentMediaFile.charAt(i) == '\\') {
+                return currentMediaFile.substring(i + 1, currentMediaFile.length()).replace(".wav", "");
+            }
+        }
+        return currentMediaFile.replace(".wav", "");
+    }
+
     public void save() {
         //TODO: put this first part in a default level creation function
-        String levelFileName = "sampleLevel";
+        String levelFileName = "Expert.dat";
         BeatMapDifficulty expert = new BeatMapDifficulty("Expert", 7, levelFileName, 0.0, 0.0);
         BeatMapSetItem set = new BeatMapSetItem("Standard", new ArrayList<>(Arrays.asList(expert)));
-        this.beatMapInfo.set_difficultyBeatmapSets(new ArrayList<>(Arrays.asList(set)));
+        this.beatMapInfo = new BeatMapInfo("2.2.0", parseMediaFile(), "", "", "", this.beatsPerMinute, 0.0, 0.0, 0.5, 0.0, 10.0,
+                parseMediaFile() + ".wav", "", "DefaultEnvironment", "GlassDesertEnvironment", new ArrayList<>(Arrays.asList(set)));
 
         for (Map.Entry<Note2DPosition,Note> entry : this.notes.entrySet()) {
             beatMap.get_notes().add(entry.getValue());
             //TODO add all the other info
         }
         writeObjectToFile(beatMap, levelFileName);
-        writeObjectToFile(beatMapInfo, "sampleInfo");
+        writeObjectToFile(beatMapInfo, "Info.dat");
     }
 
     private void writeObjectToFile(Object object, String name) {
         try {
-            FileWriter file = new FileWriter("resources/" + name + ".json");
+            FileWriter file = new FileWriter("resources/" + name);
             file.write(JsonHandler.toJson(object));
             file.close();
         } catch (IOException e) {
