@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static Utils.Constants.noteSize;
@@ -88,14 +90,14 @@ public class ProgramState implements ProgramStateListener{
 
     public void load(File dir) {
         this.currentLevelDirectory = dir;
-        this.beatMapInfo = JsonHandler.fromJson(currentLevelDirectory.getAbsolutePath() + "\\Info.dat", BeatMapInfo.class);
+        this.beatMapInfo = this.readObjectFromFile(currentLevelDirectory.getAbsolutePath() + "\\Info.dat", BeatMapInfo.class);
         this.beatsPerMinute = beatMapInfo.get_beatsPerMinute();
         this.currentMediaFile = currentLevelDirectory.getAbsolutePath() + "\\" + beatMapInfo.get_songFilename();
-        this.beatMap = JsonHandler.fromJson(currentLevelDirectory.getAbsolutePath() + "\\Expert.dat", BeatMapLevelJson.class);
+        this.beatMap = this.readObjectFromFile(currentLevelDirectory.getAbsolutePath() + "\\Expert.dat", BeatMapLevelJson.class);
         //TODO read in obstacles and events as well
         this.notes = new HashMap<>();
         for (Note note : beatMap.get_notes()) {
-            notes.put(new Note2DPosition((int)note.get_time(), Constants.audioOffsetMultiplier + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize), note);
+            notes.put(new Note2DPosition((int)note.get_time(), (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize), note);
         }
         this.openAudioFile(new File(currentMediaFile));
         for (ProgramStateListener listener : listenerList) {
@@ -112,6 +114,19 @@ public class ProgramState implements ProgramStateListener{
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private <T> T readObjectFromFile(String fileName, Class<T> classOfT) {
+        try {
+            String input = Files.readString(Path.of(fileName));
+            T object = JsonHandler.fromJson(input, classOfT);
+
+            return object;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
     /**
      * Adds a new listener to be notified when the state of the program changes.

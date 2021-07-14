@@ -1,5 +1,7 @@
 package Models.Json;
 
+import java.util.Objects;
+
 public class BeatMapDifficulty {
     private String _difficulty;
     private int _difficultyRank;
@@ -61,5 +63,22 @@ public class BeatMapDifficulty {
 
     public void set_noteJumpStartBeatOffset(double _noteJumpStartBeatOffset) {
         this._noteJumpStartBeatOffset = _noteJumpStartBeatOffset;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeatMapDifficulty that = (BeatMapDifficulty) o;
+        return _difficultyRank == that._difficultyRank &&
+                Double.compare(that._noteJumpMovementSpeed, _noteJumpMovementSpeed) == 0 &&
+                Double.compare(that._noteJumpStartBeatOffset, _noteJumpStartBeatOffset) == 0 &&
+                Objects.equals(_difficulty, that._difficulty) &&
+                Objects.equals(_beatmapFilename, that._beatmapFilename);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_difficulty, _difficultyRank, _beatmapFilename, _noteJumpMovementSpeed, _noteJumpStartBeatOffset);
     }
 }

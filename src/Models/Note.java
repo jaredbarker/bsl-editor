@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.Objects;
+
 public class Note {
     private double _time;
     private int _lineIndex;
@@ -54,5 +56,22 @@ public class Note {
 
     public void set_cutDirection(int _cutDirection) {
         this._cutDirection = _cutDirection;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Note note = (Note) o;
+        return Double.compare(note._time, _time) == 0 &&
+                _lineIndex == note._lineIndex &&
+                _lineLayer == note._lineLayer &&
+                _type == note._type &&
+                _cutDirection == note._cutDirection;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_time, _lineIndex, _lineLayer, _type, _cutDirection);
     }
 }

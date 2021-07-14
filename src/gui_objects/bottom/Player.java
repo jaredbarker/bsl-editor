@@ -30,6 +30,7 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     }
 
     private void initPlayer(String file) {
+        file = file.replace('\\', '/');
         state.setCompressedSamples(getCompressedSamples());
         media = new Media("file:///" + file);
         player = new MediaPlayer(media);
@@ -68,9 +69,9 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     @Override
     public void openAudioFile(File audioFile) {
         try {
-            state.setCurrentMediaFile(audioFile.toURI().toURL().toExternalForm());
+            state.setCurrentMediaFile(audioFile.getAbsolutePath());
             initPlayer(state.getCurrentMediaFile());
-        } catch (MalformedURLException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
     }

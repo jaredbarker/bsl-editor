@@ -3,7 +3,7 @@ package Models;
 import java.util.Objects;
 
 public class Note2DPosition implements Comparable{
-    private int row;
+    private int row; //todo change to double, or calculate actual row number in left pane
     private int col;
 
     public Note2DPosition(int row, int col) {

@@ -2,6 +2,7 @@ package Models.Json;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BeatMapInfo {
     private String _version;
@@ -185,5 +186,33 @@ public class BeatMapInfo {
 
     public void set_difficultyBeatmapSets(List<BeatMapSetItem> _difficultyBeatmapSets) {
         this._difficultyBeatmapSets = _difficultyBeatmapSets;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeatMapInfo that = (BeatMapInfo) o;
+        return _beatsPerMinute == that._beatsPerMinute &&
+                Double.compare(that._songTimeOffset, _songTimeOffset) == 0 &&
+                Double.compare(that._shuffle, _shuffle) == 0 &&
+                Double.compare(that._shufflePeriod, _shufflePeriod) == 0 &&
+                Double.compare(that._previewStartTime, _previewStartTime) == 0 &&
+                Double.compare(that._previewDuration, _previewDuration) == 0 &&
+                Objects.equals(_version, that._version) &&
+                Objects.equals(_songName, that._songName) &&
+                Objects.equals(_songSubName, that._songSubName) &&
+                Objects.equals(_songAuthorName, that._songAuthorName) &&
+                Objects.equals(_levelAuthorName, that._levelAuthorName) &&
+                Objects.equals(_songFilename, that._songFilename) &&
+                Objects.equals(_coverImageFilename, that._coverImageFilename) &&
+                Objects.equals(_environmentName, that._environmentName) &&
+                Objects.equals(_allDirectionsEnvironmentName, that._allDirectionsEnvironmentName) &&
+                Objects.equals(_difficultyBeatmapSets, that._difficultyBeatmapSets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(_version, _songName, _songSubName, _songAuthorName, _levelAuthorName, _beatsPerMinute, _songTimeOffset, _shuffle, _shufflePeriod, _previewStartTime, _previewDuration, _songFilename, _coverImageFilename, _environmentName, _allDirectionsEnvironmentName, _difficultyBeatmapSets);
     }
 }
