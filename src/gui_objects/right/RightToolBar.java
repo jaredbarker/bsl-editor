@@ -98,4 +98,6 @@ public class RightToolBar extends ToolBar implements EventHandler<ActionEvent>, 
 
      @Override
     public void scrollBeatmap(double jumpVector){}
+
+    public  void load(File dir) {}
 }

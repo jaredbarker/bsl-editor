@@ -5,6 +5,7 @@ import Models.Json.BeatMapDifficulty;
 import Models.Json.BeatMapInfo;
 import Models.Json.BeatMapLevelJson;
 import Models.Json.BeatMapSetItem;
+import Utils.Constants;
 import Utils.JsonHandler;
 import gui_objects.right.RightButtonsEnum;
 import javafx.stage.Stage;
@@ -29,6 +30,7 @@ public class ProgramState implements ProgramStateListener{
     private NoteType currentNoteType;
     private CutDirection currentNoteDirection;
     private String currentMediaFile;
+    private File currentLevelDirectory;
     private Stage primaryStage;
     private int beatMapHeight;
     private int audioVisualizerWidth;
@@ -82,6 +84,23 @@ public class ProgramState implements ProgramStateListener{
         }
         writeObjectToFile(beatMap, levelFileName);
         writeObjectToFile(beatMapInfo, "Info.dat");
+    }
+
+    public void load(File dir) {
+        this.currentLevelDirectory = dir;
+        this.beatMapInfo = JsonHandler.fromJson(currentLevelDirectory.getAbsolutePath() + "\\Info.dat", BeatMapInfo.class);
+        this.beatsPerMinute = beatMapInfo.get_beatsPerMinute();
+        this.currentMediaFile = currentLevelDirectory.getAbsolutePath() + "\\" + beatMapInfo.get_songFilename();
+        this.beatMap = JsonHandler.fromJson(currentLevelDirectory.getAbsolutePath() + "\\Expert.dat", BeatMapLevelJson.class);
+        //TODO read in obstacles and events as well
+        this.notes = new HashMap<>();
+        for (Note note : beatMap.get_notes()) {
+            notes.put(new Note2DPosition((int)note.get_time(), Constants.audioOffsetMultiplier + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize), note);
+        }
+        this.openAudioFile(new File(currentMediaFile));
+        for (ProgramStateListener listener : listenerList) {
+            listener.load(dir);
+        }
     }
 
     private void writeObjectToFile(Object object, String name) {
@@ -159,6 +178,14 @@ public class ProgramState implements ProgramStateListener{
         for (ProgramStateListener listener : listenerList) {
             listener.scrollBeatmap(jumpVector);
         }
+    }
+
+    public File getCurrentLevelDirectory() {
+        return currentLevelDirectory;
+    }
+
+    public void setCurrentLevelDirectory(File currentLevelDirectory) {
+        this.currentLevelDirectory = currentLevelDirectory;
     }
 
     public NoteType getCurrentNoteType() {

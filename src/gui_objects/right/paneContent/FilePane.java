@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -15,14 +16,17 @@ import java.io.File;
 public class FilePane extends BorderPane implements ProgramStateListener {
     private Button openAudioFile;
     private Button save;
+    private Button load;
     private ProgramState state;
     private FileChooser fileChooser;
+    private DirectoryChooser directoryChooser;
 
     public FilePane(ProgramState state) {
         super();
         this.state = state;
         this.state.addListener(this);
         this.fileChooser = new FileChooser();
+        this.directoryChooser = new DirectoryChooser();
         this.save = new Button("Save");
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
@@ -42,8 +46,21 @@ public class FilePane extends BorderPane implements ProgramStateListener {
                 }
             }
         });
+        this.load = new Button("Load");
+        load.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                state.pausePlayer();
+                File file = directoryChooser.showDialog(state.getPrimaryStage());
+
+                if (file != null) {
+                    state.load(file);
+                }
+            }
+        });
         this.setCenter(this.openAudioFile);
         this.setTop(this.save);
+        this.setBottom(this.load);
     }
 
     @Override
@@ -74,4 +91,6 @@ public class FilePane extends BorderPane implements ProgramStateListener {
 
      @Override
     public void scrollBeatmap(double jumpVector){}
+
+    public  void load(File dir) {}
 }

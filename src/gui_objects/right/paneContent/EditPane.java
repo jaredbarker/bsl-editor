@@ -173,4 +173,6 @@ public class EditPane extends BorderPane implements ProgramStateListener, EventH
 
      @Override
     public void scrollBeatmap(double jumpVector){}
+
+    public  void load(File dir) {}
 }

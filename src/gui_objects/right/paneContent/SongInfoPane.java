@@ -49,4 +49,6 @@ public class SongInfoPane extends BorderPane implements ProgramStateListener {
 
      @Override
     public void scrollBeatmap(double jumpVector){}
+
+    public  void load(File dir) {}
 }

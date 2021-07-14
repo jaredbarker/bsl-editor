@@ -97,4 +97,6 @@ public class Player extends BorderPane implements ProgramStateListener// Player 
     public void scrollBeatmap(double jumpVector){
         bar.stepSongTimeByNoteIncrements(jumpVector);
      }
+
+    public  void load(File dir) {}
 }
