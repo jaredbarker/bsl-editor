@@ -38,7 +38,7 @@ public class ProgramState implements ProgramStateListener{
     private int audioVisualizerWidth;
     private double[] compressedSamples;
     private HashMap<Integer, CutDirection> intToCutDirection;
-    private static int notesPerBeat = 4;
+    private int notesPerBeat = 4;
 
     private double totalSongTime;
     private double currentSongTime;
@@ -183,49 +183,59 @@ public class ProgramState implements ProgramStateListener{
         if (a < b)
             return gcd(b, a);
         // base case
-        if (Math.abs(b) < 0.0000001)
+        if (Math.abs(b) < Constants.precision)
             return a;
         else
             return (gcd(b, a -
                     Math.floor(a / b) * b));
     }
 
-    private Pair<Double, Double> getNoteDiffs() {
+    protected Pair<Double, Double> getNoteDiffs() {
         HashSet<Double> noteDiffs = new HashSet<>();
         Note prevNote = null;
-        for (Note note : beatMap.get_notes()) {
+        for (Map.Entry<Note2DPosition, Note> entry: notes.entrySet()) {
+            Note note = entry.getValue();
             if (prevNote == null) {
                 prevNote = note;
             } else {
                 double diff = note.get_time() - prevNote.get_time();
-                if (diff != 0) { //Todo: check for close to equals
+                if (Math.abs(diff) > Constants.precision) { //Check for notes that occur at the same time and don't include them
                     noteDiffs.add(diff);
                 }
+                prevNote = note;
             }
         }
-        Iterator itr1 = noteDiffs.iterator();
-        Double minDiffDiff = Double.MAX_VALUE;
-        Pair<Double, Double> gcdDiffs = new Pair<>(null, null);
-        for (Double diff : noteDiffs) {
+        if (noteDiffs.size() == 1) {
+            Double num = noteDiffs.iterator().next();
+            return new Pair<>(num, num);
+        } else {
+            Iterator itr1 = noteDiffs.iterator();
             if (itr1.hasNext()) {
                 itr1.next();
             }
-            Iterator itr2 = itr1;
-            while (itr2.hasNext()) {
-                Double nextDiff = (Double) itr2.next();
-                Double diffDiff = Math.abs(diff - nextDiff);
-                if (diffDiff < minDiffDiff) {
-                    minDiffDiff = diffDiff;
-                    gcdDiffs = new Pair<>(diff, nextDiff);
+            Double minDiffDiff = Double.MAX_VALUE;
+            Pair<Double, Double> gcdDiffs = new Pair<>(null, null);
+            for (Double diff : noteDiffs) {
+                Iterator itr2 = itr1;
+                while (itr2.hasNext()) {
+                    Double nextDiff = (Double) itr2.next();
+                    Double diffDiff = Math.abs(diff - nextDiff);
+                    if (diffDiff < minDiffDiff) {
+                        minDiffDiff = diffDiff;
+                        gcdDiffs = new Pair<>(diff, nextDiff);
+                    }
+                }
+                if (itr1.hasNext()) {
+                    itr1.next();
                 }
             }
+            return gcdDiffs;
         }
-        return gcdDiffs;
     }
 
 
     private void calculateNotesPerBeat(double noteDiff1, double noteDiff2) {
-        //find gcd of 2 note time differences of sequntial notes. use the 2 note diffs that are closest together.
+        //find gcd of 2 note time differences of sequential notes. use the 2 note diffs that are closest together.
         //use that gcd to find the notesPerBeat
 
         double numMinutes = this.getTotalSongTime() / 1000 / 60;
@@ -372,5 +382,13 @@ public class ProgramState implements ProgramStateListener{
 
     public CutDirection getCutDirection(int dir) {
         return this.intToCutDirection.get(dir);
+    }
+
+    public int getNotesPerBeat() {
+        return notesPerBeat;
+    }
+
+    public void setNotesPerBeat(int notesPerBeat) {
+        this.notesPerBeat = notesPerBeat;
     }
 }

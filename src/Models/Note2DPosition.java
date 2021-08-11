@@ -36,9 +36,9 @@ public class Note2DPosition implements Comparable{
     public int compareTo(Object o) {
         Note2DPosition other = (Note2DPosition) o;
         if (this.roundedMilliseconds > other.roundedMilliseconds) {
-            return -1;
-        } else if (this.roundedMilliseconds < other.roundedMilliseconds){
             return 1;
+        } else if (this.roundedMilliseconds < other.roundedMilliseconds){
+            return -1;
         } else { // row is equal, compare col
             //shouldn't get here...duplicate note..so they are equal
             return Integer.compare(other.col, this.col);

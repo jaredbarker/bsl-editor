@@ -18,4 +18,5 @@ public class Constants {
     public static final double negStepRoundoff = -1.1;
     public static final double rateIncrement = 0.25;
     public static final double defaultRate = 1.0;
+    public static final double precision = 0.0000001;
 }
