@@ -11,7 +11,6 @@ public class Constants {
     public static final int baritoneUpperBound = baritoneLowerBound + (4 * noteSize);
     public static final int tenorLowerBound = baritoneUpperBound + (2 * noteSize);
     public static final int tenorUpperBound = tenorLowerBound + (4 * noteSize);
-    public static final int notesPerBeat = 4;
     public static final int rowPlusBuffer = noteSize * 6;
     public static final int rowNoBuffer = noteSize * 4;
     public static final int rowFirstAndLastDot = noteSize * 5;

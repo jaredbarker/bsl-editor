@@ -3,20 +3,20 @@ package Models;
 import java.util.Objects;
 
 public class Note2DPosition implements Comparable{
-    private int row; //todo change to double, or calculate actual row number in left pane
+    private int roundedMilliseconds; //should be fine to round, milliseconds are accurate enough
     private int col;
 
-    public Note2DPosition(int row, int col) {
-        this.row = row;
+    public Note2DPosition(int roundedMilliseconds, int col) {
+        this.roundedMilliseconds = roundedMilliseconds;
         this.col = col;
     }
 
-    public int getRow() {
-        return row;
+    public int getRoundedMilliseconds() {
+        return roundedMilliseconds;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public void setRoundedMilliseconds(int roundedMilliseconds) {
+        this.roundedMilliseconds = roundedMilliseconds;
     }
 
     public int getCol() {
@@ -35,9 +35,9 @@ public class Note2DPosition implements Comparable{
     @Override
     public int compareTo(Object o) {
         Note2DPosition other = (Note2DPosition) o;
-        if (this.row > other.row) {
+        if (this.roundedMilliseconds > other.roundedMilliseconds) {
             return -1;
-        } else if (this.row < other.row){
+        } else if (this.roundedMilliseconds < other.roundedMilliseconds){
             return 1;
         } else { // row is equal, compare col
             //shouldn't get here...duplicate note..so they are equal
@@ -50,12 +50,12 @@ public class Note2DPosition implements Comparable{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Note2DPosition that = (Note2DPosition) o;
-        return row == that.row &&
+        return roundedMilliseconds == that.roundedMilliseconds &&
                 col == that.col;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(row, col);
+        return Objects.hash(roundedMilliseconds, col);
     }
 }

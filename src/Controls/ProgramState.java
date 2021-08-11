@@ -9,6 +9,7 @@ import Utils.Constants;
 import Utils.JsonHandler;
 import gui_objects.right.RightButtonsEnum;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +19,6 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static Utils.Constants.noteSize;
-import static Utils.Constants.notesPerBeat;
 
 /**
  * Keeps track of the state of the program, and notifies listeners of changes so that they can perform the appropriate
@@ -26,7 +26,7 @@ import static Utils.Constants.notesPerBeat;
  */
 public class ProgramState implements ProgramStateListener{
     private List<ProgramStateListener> listenerList;
-    private Map<Note2DPosition, Note> notes;
+    private TreeMap<Note2DPosition, Note> notes;
     private BeatMapLevelJson beatMap;
     private BeatMapInfo beatMapInfo;
     private NoteType currentNoteType;
@@ -38,6 +38,7 @@ public class ProgramState implements ProgramStateListener{
     private int audioVisualizerWidth;
     private double[] compressedSamples;
     private HashMap<Integer, CutDirection> intToCutDirection;
+    private static int notesPerBeat = 4;
 
     private double totalSongTime;
     private double currentSongTime;
@@ -95,10 +96,7 @@ public class ProgramState implements ProgramStateListener{
         this.currentMediaFile = currentLevelDirectory.getAbsolutePath() + "\\" + beatMapInfo.get_songFilename();
         this.beatMap = this.readObjectFromFile(currentLevelDirectory.getAbsolutePath() + "\\Expert.dat", BeatMapLevelJson.class);
         //TODO read in obstacles and events as well
-        this.notes = new HashMap<>();
-        for (Note note : beatMap.get_notes()) {
-            notes.put(new Note2DPosition((int)note.get_time(), (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize), note);
-        }
+
         this.openAudioFile(new File(currentMediaFile));
         for (ProgramStateListener listener : listenerList) {
             listener.load(dir);
@@ -176,9 +174,78 @@ public class ProgramState implements ProgramStateListener{
         }
     }
 
+
+
+    // Recursive function to return gcd
+    // of a and b
+    public double gcd(double a, double b)
+    {
+        if (a < b)
+            return gcd(b, a);
+        // base case
+        if (Math.abs(b) < 0.0000001)
+            return a;
+        else
+            return (gcd(b, a -
+                    Math.floor(a / b) * b));
+    }
+
+    private Pair<Double, Double> getNoteDiffs() {
+        HashSet<Double> noteDiffs = new HashSet<>();
+        Note prevNote = null;
+        for (Note note : beatMap.get_notes()) {
+            if (prevNote == null) {
+                prevNote = note;
+            } else {
+                double diff = note.get_time() - prevNote.get_time();
+                if (diff != 0) { //Todo: check for close to equals
+                    noteDiffs.add(diff);
+                }
+            }
+        }
+        Iterator itr1 = noteDiffs.iterator();
+        Double minDiffDiff = Double.MAX_VALUE;
+        Pair<Double, Double> gcdDiffs = new Pair<>(null, null);
+        for (Double diff : noteDiffs) {
+            if (itr1.hasNext()) {
+                itr1.next();
+            }
+            Iterator itr2 = itr1;
+            while (itr2.hasNext()) {
+                Double nextDiff = (Double) itr2.next();
+                Double diffDiff = Math.abs(diff - nextDiff);
+                if (diffDiff < minDiffDiff) {
+                    minDiffDiff = diffDiff;
+                    gcdDiffs = new Pair<>(diff, nextDiff);
+                }
+            }
+        }
+        return gcdDiffs;
+    }
+
+
+    private void calculateNotesPerBeat(double noteDiff1, double noteDiff2) {
+        //find gcd of 2 note time differences of sequntial notes. use the 2 note diffs that are closest together.
+        //use that gcd to find the notesPerBeat
+
+        double numMinutes = this.getTotalSongTime() / 1000 / 60;
+        double totalBeats = this.getBeatsPerMinute() * numMinutes;
+        double milliSecondsPerBeat = this.getTotalSongTime() / totalBeats;
+
+        notesPerBeat = (int) Math.round(milliSecondsPerBeat/gcd(noteDiff1, noteDiff2));
+    }
     @Override
     public void totalTimeUpdated(double newTotalTime) {
         this.setTotalSongTime(newTotalTime);
+        this.notes = new TreeMap<>();
+        for (Note note : beatMap.get_notes()) {
+            note.set_time(note.get_time() * 1000);
+            int col = (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize;
+            notes.put(new Note2DPosition((int)note.get_time(), col), note);
+        }
+        Pair<Double,Double> noteDiffs = getNoteDiffs();
+        this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+
         double height = this.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
 
         //TODO: make it a double!!!

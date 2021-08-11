@@ -161,7 +161,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         if (isAdd) {
             state.addNote(new Note2DPosition((int)time, currentMouseCol), new Note(time , NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
         } else {
-            state.removeNote(new Note2DPosition((int)time, currentMouseCol)); //TODO: fix remove
+            state.removeNote(new Note2DPosition((int)time, currentMouseCol));
         }
     }
 
