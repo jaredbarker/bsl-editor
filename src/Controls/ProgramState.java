@@ -244,18 +244,24 @@ public class ProgramState implements ProgramStateListener{
 
         notesPerBeat = (int) Math.round(milliSecondsPerBeat/gcd(noteDiff1, noteDiff2));
     }
-    @Override
-    public void totalTimeUpdated(double newTotalTime) {
-        this.setTotalSongTime(newTotalTime);
+
+    private Pair<Double, Double> loadNotes() {
         this.notes = new TreeMap<>();
         for (Note note : beatMap.get_notes()) {
             note.set_time(note.get_time() * 1000);
             int col = (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize;
-            notes.put(new Note2DPosition((int)note.get_time(), col), note);
+            notes.put(new Note2DPosition((int) note.get_time(), col), note);
         }
-        Pair<Double,Double> noteDiffs = getNoteDiffs();
-        this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+        return getNoteDiffs();
+    }
 
+    @Override
+    public void totalTimeUpdated(double newTotalTime) {
+        this.setTotalSongTime(newTotalTime);
+        if (beatMap != null && beatMap.get_notes() != null && beatMap.get_notes().size() > 0) {
+            Pair<Double, Double> noteDiffs = loadNotes();
+            this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+        }
         double height = this.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
 
         //TODO: make it a double!!!

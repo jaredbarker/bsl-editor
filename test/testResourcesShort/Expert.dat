@@ -1,0 +1,67 @@
+{
+  "_version": "2.2.0",
+  "_events": [],
+  "_notes": [
+    {
+      "_time": 0.0,
+      "_lineIndex": 0,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 0.25,
+      "_lineIndex": 1,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 0.5,
+      "_lineIndex": 2,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 0.75,
+      "_lineIndex": 3,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 60.5,
+      "_lineIndex": 0,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 60.5,
+      "_lineIndex": 1,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 60.5,
+      "_lineIndex": 2,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    },
+    {
+      "_time": 60.5,
+      "_lineIndex": 3,
+      "_lineLayer": 0,
+      "_type": 0,
+      "_cutDirection": 1
+    }
+  ],
+  "_waypoints": [],
+  "_obstacles": [],
+  "_specialEventsKeywordFilters": {
+    "_keywords": []
+  }
+}
