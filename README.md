@@ -42,3 +42,6 @@ cherry on top/future features:
 	
 	simple 2 json file starts cut direction on base row: up and then going clockwise around
     to next mid row at later time and finally top row at latest time
+
+Helpful link for understanding the json format from the Oculus quest editor
+https://bsmg.wiki/mapping/map-format.html#notes-2
