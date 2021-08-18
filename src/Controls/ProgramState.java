@@ -85,6 +85,7 @@ public class ProgramState implements ProgramStateListener{
             //(note.get_time() * 1000 * this.getBeatsPerMinute()) / 60)
             Note note = entry.getValue();
             //make a copy note to convert time to beat number
+            //TODO: FIX the milliseconds to beat conversion!!!!!! (look at load formula to figure it out)
             Note saveNote = new Note((note.get_time() * 60) / (1000 * this.getBeatsPerMinute()), note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
             beatMap.get_notes().add(saveNote);
             //TODO add all the other info
@@ -252,16 +253,17 @@ public class ProgramState implements ProgramStateListener{
 
     private Pair<Double, Double> loadNotes() {
         this.notes = new TreeMap<>();
+        double millisecondsPerBeat = 1 /(this.getBeatsPerMinute() * (1 / 1000.0 / 60.0));
         for (Note note : beatMap.get_notes()) {
             //TODO change magic numbers
             int col = (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize;
-            notes.put(new Note2DPosition((int) ((note.get_time() * 1000 * this.getBeatsPerMinute()) / 60), col), note);
+            notes.put(new Note2DPosition((int) (note.get_time() * millisecondsPerBeat), col), note);
         }
         Pair<Double, Double> noteDiffs = getNoteDiffs();
         //Get the differences, and then convert from beat number into time in milliseconds
         for (Map.Entry<Note2DPosition, Note> entry: notes.entrySet()) {
             //TODO change magic numbers
-            entry.getValue().set_time((entry.getValue().get_time() * 1000 * this.getBeatsPerMinute()) / 60); //converts from beat number to time in milliseconds
+            entry.getValue().set_time((entry.getValue().get_time() * millisecondsPerBeat)); //converts from beat number to time in milliseconds
         }
         return noteDiffs;
     }
