@@ -7,6 +7,9 @@ import javafx.util.Pair;
 import junit.framework.TestCase;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
 
 public class ProgramStateTest extends TestCase {
     ProgramState testState;
@@ -55,5 +58,20 @@ public class ProgramStateTest extends TestCase {
         Pair<Double, Double> result = testState.getNoteDiffs();
         assertEquals(250.0, result.getValue());
         assertEquals(500.0, result.getKey());
+    }
+
+    public void testLoadSave() throws Exception {
+        testState.load(new File("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated"));
+        Map<Note2DPosition, Note> initNotes = testState.getNotes();
+        int bpm = testState.getBeatsPerMinute();
+        int notesPerBeat = testState.getNotesPerBeat();
+        testState.save("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated");
+        testState.load(new File("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated"));
+        assertEquals(initNotes, testState.getNotes());
+        assertEquals(bpm, testState.getBeatsPerMinute());
+        assertEquals(notesPerBeat, testState.getNotesPerBeat());
+        String validation = Files.readString(Path.of("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\validateExpertComplicated.dat"));
+        String saved = Files.readString(Path.of("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated\\Expert.dat"));
+        assertEquals(validation, saved);
     }
 }

@@ -30,7 +30,7 @@ public class FilePane extends BorderPane implements ProgramStateListener {
         this.save = new Button("Save");
         save.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                state.save();
+                state.save("/resources");
             }
         });
         this.openAudioFile = new Button("Open Audio");

@@ -73,7 +73,7 @@ public class ProgramState implements ProgramStateListener{
         return currentMediaFile.replace(".wav", "");
     }
 
-    public void save() {
+    public void save(String directory) {
         //TODO: put this first part in a default level creation function
         String levelFileName = "Expert.dat";
         BeatMapDifficulty expert = new BeatMapDifficulty("Expert", 7, levelFileName, 0.0, 0.0);
@@ -85,13 +85,12 @@ public class ProgramState implements ProgramStateListener{
             //(note.get_time() * 1000 * this.getBeatsPerMinute()) / 60)
             Note note = entry.getValue();
             //make a copy note to convert time to beat number
-            //TODO: FIX the milliseconds to beat conversion!!!!!! (look at load formula to figure it out)
-            Note saveNote = new Note((note.get_time() * 60) / (1000 * this.getBeatsPerMinute()), note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
+            Note saveNote = new Note(note.get_time() / getMillisecondsPerBeat(), note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
             beatMap.get_notes().add(saveNote);
             //TODO add all the other info
         }
-        writeObjectToFile(beatMap, levelFileName);
-        writeObjectToFile(beatMapInfo, "Info.dat");
+        writeObjectToFile(beatMap, levelFileName, directory);
+        writeObjectToFile(beatMapInfo, "Info.dat", directory);
     }
 
     public void load(File dir) {
@@ -101,16 +100,19 @@ public class ProgramState implements ProgramStateListener{
         this.currentMediaFile = currentLevelDirectory.getAbsolutePath() + "\\" + beatMapInfo.get_songFilename();
         this.beatMap = this.readObjectFromFile(currentLevelDirectory.getAbsolutePath() + "\\Expert.dat", BeatMapLevelJson.class);
         //TODO read in obstacles and events as well
-
+        if (beatMap != null && beatMap.get_notes() != null && beatMap.get_notes().size() > 0) {
+            Pair<Double, Double> noteDiffs = loadNotes();
+            this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+        }
         this.openAudioFile(new File(currentMediaFile));
         for (ProgramStateListener listener : listenerList) {
             listener.load(dir);
         }
     }
 
-    private void writeObjectToFile(Object object, String name) {
+    private void writeObjectToFile(Object object, String name, String directory) {
         try {
-            FileWriter file = new FileWriter("resources/" + name);
+            FileWriter file = new FileWriter(directory + name);
             file.write(JsonHandler.toJson(object));
             file.close();
         } catch (IOException e) {
@@ -251,9 +253,18 @@ public class ProgramState implements ProgramStateListener{
         notesPerBeat = (int) Math.round(1/gcd(noteDiff1, noteDiff2));
     }
 
+    private double getMillisecondsPerBeat() {
+        return 1 /(this.getBeatsPerMinute() * (1 / 1000.0 / 60.0));
+    }
+
+    /**
+     * Loads notes from the json mock object to our map of notes to be used in the gui.  Calculates the note differences
+     * in the middle because we need the differences before we change the notes from beat time to milliseconds
+     * @return
+     */
     private Pair<Double, Double> loadNotes() {
         this.notes = new TreeMap<>();
-        double millisecondsPerBeat = 1 /(this.getBeatsPerMinute() * (1 / 1000.0 / 60.0));
+        double millisecondsPerBeat = getMillisecondsPerBeat();
         for (Note note : beatMap.get_notes()) {
             //TODO change magic numbers
             int col = (Constants.audioOffsetMultiplier * noteSize) + (note.get_lineLayer() * Constants.rowPlusBuffer) + note.get_lineIndex() * noteSize;
@@ -271,10 +282,6 @@ public class ProgramState implements ProgramStateListener{
     @Override
     public void totalTimeUpdated(double newTotalTime) {
         this.setTotalSongTime(newTotalTime);
-        if (beatMap != null && beatMap.get_notes() != null && beatMap.get_notes().size() > 0) {
-            Pair<Double, Double> noteDiffs = loadNotes();
-            this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
-        }
         //TODO: change magic numbers
         double height = this.getBeatsPerMinute() * noteSize * (newTotalTime / 1000 / 60) * notesPerBeat;
 
