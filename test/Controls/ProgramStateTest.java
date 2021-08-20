@@ -29,7 +29,7 @@ public class ProgramStateTest extends TestCase {
     }
 
     public void testTotalTimeUpdated() {
-        testState.load(new File("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResources"));
+        testState.load(new File("./test/testResources"));
 
         testState.totalTimeUpdated((60.0 * 1000));
 
@@ -61,17 +61,17 @@ public class ProgramStateTest extends TestCase {
     }
 
     public void testLoadSave() throws Exception {
-        testState.load(new File("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated"));
+        testState.load(new File("./test/testResourcesComplicated"));
         Map<Note2DPosition, Note> initNotes = testState.getNotes();
         int bpm = testState.getBeatsPerMinute();
         int notesPerBeat = testState.getNotesPerBeat();
-        testState.save("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated");
-        testState.load(new File("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated"));
+        testState.save("./test/testResourcesComplicated");
+        testState.load(new File("./test/testResourcesComplicated"));
         assertEquals(initNotes, testState.getNotes());
         assertEquals(bpm, testState.getBeatsPerMinute());
         assertEquals(notesPerBeat, testState.getNotesPerBeat());
-        String validation = Files.readString(Path.of("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\validateExpertComplicated.dat"));
-        String saved = Files.readString(Path.of("C:\\Users\\jared\\IdeaProjects\\bsl-editor\\test\\testResourcesComplicated\\Expert.dat"));
+        String validation = Files.readString(Path.of("./test/validateExpertComplicated.dat"));
+        String saved = Files.readString(Path.of("./test/testResourcesComplicated/Expert.dat"));
         assertEquals(validation, saved);
     }
 }
