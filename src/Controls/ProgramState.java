@@ -78,7 +78,7 @@ public class ProgramState implements ProgramStateListener{
         String levelFileName = "Expert.dat";
         BeatMapDifficulty expert = new BeatMapDifficulty("Expert", 7, levelFileName, 0.0, 0.0);
         BeatMapSetItem set = new BeatMapSetItem("Standard", new ArrayList<>(Arrays.asList(expert)));
-        this.beatMapInfo = new BeatMapInfo("2.2.0", parseMediaFile(), "", "", "", this.beatsPerMinute, 0.0, 0.0, 0.5, 0.0, 10.0,
+        this.beatMapInfo = new BeatMapInfo("2.0.0", parseMediaFile(), "", "", "", this.beatsPerMinute, 0.0, 0.0, 0.5, 0.0, 10.0,
                 parseMediaFile() + ".wav", "", "DefaultEnvironment", "GlassDesertEnvironment", new ArrayList<>(Arrays.asList(set)));
 
         for (Map.Entry<Note2DPosition,Note> entry : this.notes.entrySet()) {
