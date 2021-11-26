@@ -52,7 +52,7 @@ public class ProgramState implements ProgramStateListener{
         this.beatMapHeight = 10000;
         this.totalSongTime = 100;
         this.currentSongTime = 0;
-        this.beatsPerMinute = 90;
+        this.beatsPerMinute = 130;
         this.listenerList = new ArrayList<>();
         this.notes = new TreeMap<>();
         this.intToCutDirection = new HashMap<>();
@@ -207,7 +207,7 @@ public class ProgramState implements ProgramStateListener{
             } else {
                 double diff = note.get_time() - prevNote.get_time();
                 if (Math.abs(diff) > Constants.precision) { //Check for notes that occur at the same time and don't include them
-                    noteDiffs.add(Math.round(diff * 10000.0) / 10000.0);
+                    noteDiffs.add(Math.round(diff * 1000.0)/1000.0); //(diff * 10000.0) / 10000.0);
                 }
                 prevNote = note;
             }
