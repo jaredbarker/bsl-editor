@@ -80,12 +80,16 @@ public class ProgramState implements ProgramStateListener{
         BeatMapSetItem set = new BeatMapSetItem("Standard", new ArrayList<>(Arrays.asList(expert)));
         this.beatMapInfo = new BeatMapInfo("2.0.0", parseMediaFile(), "", "", "", this.beatsPerMinute, 0.0, 0.0, 0.5, 0.0, 10.0,
                 parseMediaFile() + ".wav", "", "DefaultEnvironment", "GlassDesertEnvironment", new ArrayList<>(Arrays.asList(set)));
-
+        this.beatMap = new BeatMapLevelJson();
         for (Map.Entry<Note2DPosition,Note> entry : this.notes.entrySet()) {
             //(note.get_time() * 1000 * this.getBeatsPerMinute()) / 60)
             Note note = entry.getValue();
             //make a copy note to convert time to beat number
-            Note saveNote = new Note(note.get_time() / getMillisecondsPerBeat(), note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
+            //Note saveNote = new Note(note.get_time() / (this.getNoteTime() * this.notesPerBeat), note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
+            //Note saveNote = new Note(Math.round((note.get_time() / (this.getNoteTime() * this.notesPerBeat)) * 1000.0) / 1000.0, note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
+            double noteBeat = note.get_time() / this.getMillisecondsPerBeat();
+            noteBeat = Math.round(noteBeat * 1000000.0) / 1000000.0;
+            Note saveNote = new Note(noteBeat, note.get_lineIndex(), note.get_lineLayer(), note.get_type(), note.get_cutDirection());
             beatMap.get_notes().add(saveNote);
             //TODO add all the other info
         }
@@ -102,7 +106,9 @@ public class ProgramState implements ProgramStateListener{
         //TODO read in obstacles and events as well
         if (beatMap != null && beatMap.get_notes() != null && beatMap.get_notes().size() > 0) {
             Pair<Double, Double> noteDiffs = loadNotes();
-            this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+            if (noteDiffs != null) {
+                this.calculateNotesPerBeat(noteDiffs.getKey(), noteDiffs.getValue());
+            }
         }
         this.openAudioFile(new File(currentMediaFile));
         for (ProgramStateListener listener : listenerList) {
@@ -207,36 +213,40 @@ public class ProgramState implements ProgramStateListener{
             } else {
                 double diff = note.get_time() - prevNote.get_time();
                 if (Math.abs(diff) > Constants.precision) { //Check for notes that occur at the same time and don't include them
-                    noteDiffs.add(Math.round(diff * 1000.0)/1000.0); //(diff * 10000.0) / 10000.0);
+                    noteDiffs.add(Math.round(diff * 10000.0) / 10000.0);
                 }
                 prevNote = note;
             }
         }
-        if (noteDiffs.size() == 1) {
-            Double num = noteDiffs.iterator().next();
-            return new Pair<>(num, num);
+        if (noteDiffs.size() == 0) {
+            return null;
         } else {
-            Iterator itr1 = noteDiffs.iterator();
-            if (itr1.hasNext()) {
-                itr1.next();
-            }
-            Double minDiffDiff = Double.MAX_VALUE;
-            Pair<Double, Double> gcdDiffs = new Pair<>(null, null);
-            for (Double diff : noteDiffs) {
-                Iterator itr2 = itr1;
-                while (itr2.hasNext()) {
-                    Double nextDiff = (Double) itr2.next();
-                    Double diffDiff = Math.abs(diff - nextDiff);
-                    if (diffDiff < minDiffDiff) {
-                        minDiffDiff = diffDiff;
-                        gcdDiffs = new Pair<>(diff, nextDiff);
-                    }
-                }
+            if (noteDiffs.size() == 1) {
+                Double num = noteDiffs.iterator().next();
+                return new Pair<>(num, num);
+            } else {
+                Iterator itr1 = noteDiffs.iterator();
                 if (itr1.hasNext()) {
                     itr1.next();
                 }
+                Double minDiffDiff = Double.MAX_VALUE;
+                Pair<Double, Double> gcdDiffs = new Pair<>(null, null);
+                for (Double diff : noteDiffs) {
+                    Iterator itr2 = itr1;
+                    while (itr2.hasNext()) {
+                        Double nextDiff = (Double) itr2.next();
+                        Double diffDiff = Math.abs(diff - nextDiff);
+                        if (diffDiff < minDiffDiff) {
+                            minDiffDiff = diffDiff;
+                            gcdDiffs = new Pair<>(diff, nextDiff);
+                        }
+                    }
+                    if (itr1.hasNext()) {
+                        itr1.next();
+                    }
+                }
+                return gcdDiffs;
             }
-            return gcdDiffs;
         }
     }
 
@@ -251,9 +261,11 @@ public class ProgramState implements ProgramStateListener{
 
         notesPerBeat = (int) Math.round(milliSecondsPerBeat/gcd(noteDiff1, noteDiff2));*/
         notesPerBeat = (int) Math.round(1/gcd(noteDiff1, noteDiff2));
+        //notesPerBeat = 4;
     }
 
-    private double getMillisecondsPerBeat() {
+    //TODO: Alot of problems are caused by the millisecondsperbeat and the equivalent when gotten by using beatmap heigth are different. this makes for rounding errors.  We probably need to just use bpmilisecond
+    public double getMillisecondsPerBeat() {
         return 1 /(this.getBeatsPerMinute() * (1 / 1000.0 / 60.0));
     }
 
@@ -273,7 +285,6 @@ public class ProgramState implements ProgramStateListener{
         Pair<Double, Double> noteDiffs = getNoteDiffs();
         //Get the differences, and then convert from beat number into time in milliseconds
         for (Map.Entry<Note2DPosition, Note> entry: notes.entrySet()) {
-            //TODO change magic numbers
             entry.getValue().set_time((entry.getValue().get_time() * millisecondsPerBeat)); //converts from beat number to time in milliseconds
         }
         return noteDiffs;

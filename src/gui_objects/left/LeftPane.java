@@ -84,9 +84,9 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     }
 
     private void refreshBoard(double x, double y) {
-        int boardStart = getBoardStart((int)state.getCurrentSongTime());
+        int boardStart = getBoardStart(state.getCurrentSongTime());
         initCanvas(noteArea);
-        drawBoard(noteArea, x, y, getBoardStart((int)state.getCurrentSongTime()));
+        drawBoard(noteArea, x, y, boardStart);
         drawNotes(noteArea, boardStart);
     }
 
@@ -157,7 +157,9 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
     }
 
     private void addNote(GraphicsContext gc, boolean isAdd){
-        double time = state.getCurrentSongTime() + (canvasHeight - currentMouseRow - noteSize)/ (double) noteSize * noteTime(state);
+        double currentTimeAtNote = Math.ceil(state.getCurrentSongTime() / noteTime(state)) * noteTime(state);
+        //double time = state.getCurrentSongTime() + (canvasHeight - currentMouseRow - noteSize)/ (double) noteSize * noteTime(state);
+        double time = currentTimeAtNote + (((canvasHeight - currentMouseRow - noteSize)/ (double) noteSize) * noteTime(state));
         if (isAdd) {
             state.addNote(new Note2DPosition((int)time, currentMouseCol), new Note(time , NoteSpecs.getNoteIndex(currentMouseCol), NoteSpecs.getNoteLayer(currentMouseCol), state.getCurrentNoteType().getInt(), state.getCurrentNoteDirection().getInt()));
         } else {
@@ -176,7 +178,7 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
                 gc.setFill(NoteType.LEFT.getColor());
             }
 
-            int worldCoord = getBoardStart((int)note.get_time());
+            int worldCoord = getBoardStart(note.get_time());
             int vposition = canvasHeight + boardStart - worldCoord - noteSize;
 
             gc.fillRect(pos.getCol(), vposition, noteSize, noteSize);
@@ -198,12 +200,13 @@ public class LeftPane extends BorderPane implements ProgramStateListener {
         refreshBoard(-1, -1);
     }
 
-    private int getBoardStart(int currTimeInt) {
-        return (int) ((currTimeInt / state.getTotalSongTime()) * state.getBeatMapHeight());
+    private int getBoardStart(double currTime) {
+        return (int) Math.ceil((currTime / state.getTotalSongTime()) * state.getBeatMapHeight());
     }
 
     public static double noteTime(ProgramState state) {
-        return state.getTotalSongTime() * noteSize / state.getBeatMapHeight();
+        return state.getMillisecondsPerBeat() / state.getNotesPerBeat();
+        //return state.getTotalSongTime() * noteSize / state.getBeatMapHeight();
     }
 
      @Override
